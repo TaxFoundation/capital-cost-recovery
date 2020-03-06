@@ -2,6 +2,18 @@
 
 [UPDATE]
 
+
+## Corrections Made to Previous Years
+
+* Austria extended the depreciation length for buildings from 33 years to 40 years (from 3% to 2.5% annual depreciation). This was corrected for the years 2016, 2017, and 2018.
+
+
+
+
+
+
+
+
 The Tax Foundation’s publication [Corporate Tax Rates around the World](https://taxfoundation.org/publications/corporate-tax-rates-around-the-world/) shows how statutory corporate income tax rates have developed since 1980, with data for over 200 jurisdictions for the year 2019. The dataset we compiled for the years 1980 to 2019 is made available as a resource for research.
 
 ## The Dataset
