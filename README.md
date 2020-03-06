@@ -5,13 +5,30 @@
 
 ## Corrections Made to Previous Years
 
-* Austria extended the depreciation length for buildings from 33 years to 40 years (from 3% to 2.5% annual depreciation). This was corrected for the years 2016, 2017, and 2018.
+Corrections are generally made going back to the year 2010, unless otherwise noted.
 
+* **Austria**
+    * Extended the depreciation length for buildings from 33 years to 40 years (from 3% to 2.5% annual depreciation), see WKO, "Die Abschreibung von Betriebsgebäuden," https://www.wko.at/service/steuern/Die-Abschreibung-von-Betriebsgebaeuden.html. This was corrected for the years 2016, 2017, and 2018.
 
+* **Belgium** 
+    * Depreciates machinery as follows: DB at 28.57 percent for 3 years, then SL at 14.29 percent for two years, and finally the remaining 7.86 percent in the last year. Combining the SL depreciation years, it's around 2.6 years. The dataset previously listed is at 2 years, this was changed to 2.6 years for the years 1998 to 2019.
+    * There is an additional investment deduction for intangibles that was previously not taken into account. 
 
+* **Bulgaria**
+    * Switched its best inventory valuation method from LIFO to Weighted Average in 2011. This switch was previously not reflected in the dataset (now corrected).
 
+## Depreciation Methods
+* **SL**: straight line
+* **DB**: declining balance
+* **DB or SL**: declining balance with a switch to straight line
+* **SL2**: straight line depreciation with changing rates
+* **initialDB**: Declining Balance with initial allowance
 
+^ Add examples for each method!! 
 
+## Things that should be changed (note to myself)
+In the variable description, I think rows like the following should be adjusted (it should be "SL or DB" and not just "SL"):
+taxdeprbuildsl	Numeric, not in %	Rate of depreciation applicable if depreciation according to straight line (SL), if SL2, the second applicable rate
 
 
 The Tax Foundation’s publication [Corporate Tax Rates around the World](https://taxfoundation.org/publications/corporate-tax-rates-around-the-world/) shows how statutory corporate income tax rates have developed since 1980, with data for over 200 jurisdictions for the year 2019. The dataset we compiled for the years 1980 to 2019 is made available as a resource for research.
