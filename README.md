@@ -2,6 +2,11 @@
 
 [UPDATE]
 
+-> double check whether the calculations for Canada are right! They have "initial DB" and its not quite clear to me what should go in rate1 and rate2 - either 2017 and before or 2018 and 2019 need to be changed! (compare with Finland)
+
+Regarding underlying depreciation schedules: Kind of allowance represents the most tax-efficient possibility; other possibilities are ignored.
+
+Mexico adjusts its capital allowances for inflation!
 
 ## Corrections Made to Previous Years
 
@@ -11,17 +16,55 @@ Corrections are generally made going back to the year 2010, unless otherwise not
     * Extended the depreciation length for buildings from 33 years to 40 years (from 3% to 2.5% annual depreciation), see WKO, "Die Abschreibung von Betriebsgebäuden," https://www.wko.at/service/steuern/Die-Abschreibung-von-Betriebsgebaeuden.html. This was corrected for the years 2016, 2017, and 2018.
 
 * **Belgium** 
-    * Depreciates machinery as follows: DB at 28.57 percent for 3 years, then SL at 14.29 percent for two years, and finally the remaining 7.86 percent in the last year. Combining the SL depreciation years, it's around 2.6 years. The dataset previously listed is at 2 years, this was changed to 2.6 years for the years 1998 to 2019.
+    * Depreciates machinery as follows: DB at 28.57 percent for 3 years, then SL at 14.29 percent for 2 years, and finally the remaining 7.86 percent in the last year. Combining the SL depreciation years, it's around 2.6 years. The dataset previously listed it at 2 years, this was changed to 2.6 years for the years 1998 to 2019.
     * There is an additional investment deduction for intangibles that was previously not taken into account. 
 
 * **Bulgaria**
     * Switched its best inventory valuation method from LIFO to Weighted Average in 2011. This switch was previously not reflected in the dataset (now corrected).
 
+* **Canada**
+    * !!Cannot find any evidence for buildings being depreciated at 2 percent starting in the second year. Double check again. Is it because in Canada, only half of the annual depreciation is considered in the first year (half-year rule)?
+
+* **France**
+    * Depreciates machinery as follows: DB at 32.14 percent for 4 years, then SL at 7.07 percent for 3 years. The dataset previously listed it at 28.57 percent for 5 years and then 6.3 percent at 3 years. This was corrected for the years for the years 2001 to 2019.
+    Under the declining-balance, straight-line rates are multiplied by a factor depending on the useful life of an asset. 
+
+* **Greece**
+    *  Greece switched from LIFO to Average in 2015, which was previously not captured in the dataset. This was corrected for the years starting in 2015.
+
+* **Hungary**
+    * Generally, there is no prescribed amortization rate for intangibles in Hungary; the historical value, the residual value, and the useful life should be considered, see PwC, "Worldwide Tax Summaries - Corporate-Deductions," last reviewed Jan. 15, 2020, https://taxsummaries.pwc.com/ID/Hungary-Corporate-Deductions. The dataset previously listed it at 5 year (20%) straight-line depreciation. However, as explained above, if there is no defined amortization rate, we assume a rate of 10 percent (10%). This was corrected.
+
+* **Ireland**
+    * Ireland allows intangible assets to be written off over a fixed write-down period of 15 years (7%). The dataset previously listed it at 20 year (5%) straight-line depreciation. This was corrected.
+
+* **Japan**
+    * Japan's inventory valuation method previously listed in the dataset for the years prior to 2018 was LIFO. However, Japan switched to "Weighted-Average" as the best available method in 2009. This was corrected for the years 2009 to 2017.
+
+* **Lithuania**
+    * The dataset previuosly listed Lithuania as "DB or SL" for all asset types while it should've been "DB." This was corrected.
+
+* **Luxembourg**
+    * For the asset machinery, the dataset previously listed it as "DB or SL" with 30% DB for 4 years and 10% for 10 years for the years 2017 and 2018. However, it should've been 30% DB for 4 years and *8%* for 3 years. This was corrected.
+
+* **Netherlands**
+    * For the asset machinery, the dataset previously listed it as "SL" with 50 percent (2 years) since 2009. However, this 50 percent rate was only in place from 2009 to 2011 and has been changed multiple times. This was corrected for all years starting in 2012.
+
+* **New Zealand**
+    * The daset previously incorrectly listed the depreciation method as "DB or SL" for buildings and machinery for the years 2017 and 2018, while it should've been "DB." This was corrected.
+
+* **Slovakia**
+    * In 2015, Slovakia changed its depreciation method for buildings from a special accelerated method to SL. This change had previously not been reflected in the dataset but is now corrected. 
+
+* **Turkey**
+    * The inventory valuation method was previously listed as "LIFO." This was incorrect as LIFO is not permitted. Now corrected for 2010-2019.
+    * It is allowed to change from DB to SL for each asset (all asset types). As we assume that businesses will choose the tax-optimizing method and thus maximize depreciation rates, it is optimal to change from DB to SL as soon as the rate is greater under SL than it is under DB. This was previously not taken into account for buildings but is now corrected for the years back to 2010.
+
 ## Depreciation Methods
 * **SL**: straight line
 * **DB**: declining balance
 * **DB or SL**: declining balance with a switch to straight line
-* **SL2**: straight line depreciation with changing rates
+* **SL2**: straight line depreciation with changing rates (SL3 is treated like SL2 - see Italy)
 * **initialDB**: Declining Balance with initial allowance
 
 ^ Add examples for each method!! 
