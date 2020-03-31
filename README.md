@@ -22,6 +22,9 @@ Corrections are generally made going back to the year 2010, unless otherwise not
 * **Bulgaria**
     * Switched its best inventory valuation method from LIFO to Weighted Average in 2011. This switch was previously not reflected in the dataset (now corrected).
 
+* **Croatia**
+    * Switched its depreciation schedule for industrial buildings to SL 10 percent (for 10 years) in 2005. This was corrected. Similar corrections were made to the depreciation schedules for machinery and intangibles.
+
 * **Canada**
     * !!Cannot find any evidence for buildings being depreciated at 2 percent starting in the second year. Double check again. Is it because in Canada, only half of the annual depreciation is considered in the first year (half-year rule)?
 
