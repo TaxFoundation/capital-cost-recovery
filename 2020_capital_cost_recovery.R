@@ -13,6 +13,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 library(readxl)
 library(reshape2)
+library(plyr)
 
 
 #Read in dataset containing depreciation data
@@ -360,13 +361,59 @@ colnames(gdp_long)[colnames(gdp_long)=="value"] <- "gdp"
 #Merge net present value data with GDP data
 depdata <- merge(depdata, gdp_long, by =c("country", "year"), all=FALSE)
 
+#Weigh weighted net present values by GDP for all years
+#depdata$waverage_by_gdp <- weighted.mean(depdata$waverage, depdata$gdp, na.rm = TRUE)
+
+
 #Write data file#
 write.csv(depdata, "final-data/npv_all_years.csv")
 
 
+#Create output tables and data for the graphs included in the report#
+
+#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2019" (Table 1)
+
+depdata_2019 <- subset(depdata, year==2019)
+
+depdata_2019_ranking <- depdata_2019
+
+depdata_2019_ranking$buildings_rank <- rank(-depdata_2019_ranking$`buildings_cost_recovery`,ties.method = "min")
+depdata_2019_ranking$machines_rank <- rank(-depdata_2019_ranking$`machines_cost_recovery`,ties.method = "min")
+depdata_2019_ranking$intangibles_rank <- rank(-depdata_2019_ranking$`intangibles_cost_recovery`,ties.method = "min")
+
+depdata_2019_ranking$waverage_rank <- rank(-depdata_2019_ranking$`waverage`,ties.method = "min")
+
+depdata_2019_ranking <- subset(depdata_2019_ranking, select = -c(year, iso_3, average, gdp))
+
+depdata_2019_ranking <- depdata_2019_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
+
+depdata_2019_ranking <- depdata_2019_ranking[order(-depdata_2019_ranking$waverage, depdata_2019_ranking$country),]
+
+depdata_2019_ranking$waverage <- round(depdata_2019_ranking$waverage, digits=3)
+depdata_2019_ranking$buildings_cost_recovery <- round(depdata_2019_ranking$buildings_cost_recovery, digits=3)
+depdata_2019_ranking$machines_cost_recovery <- round(depdata_2019_ranking$machines_cost_recovery, digits=3)
+depdata_2019_ranking$intangibles_cost_recovery <- round(depdata_2019_ranking$intangibles_cost_recovery, digits=3)
+
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="country"] <- "Country"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="waverage"] <- "Weighted Average Allowance"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="waverage_rank"] <- "Weighted Average Rank"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="buildings_cost_recovery"] <- "Buildings Allowance"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="buildings_rank"] <- "Buildings Rank"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="machines_cost_recovery"] <- "Machinery Allowance"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="machines_rank"] <- "Machinery Rank"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
+colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="intangibles_rank"] <- "Intangibles Rank"
+
+write.csv(depdata_2019_ranking, "final-outputs/npv_ranks_2019.csv")
 
 
-depdata_2019 <- subset(depdata, year>2018)
+#Data for graph: "Net Present Value of Capital Allowances, OECD, 2000-2019" (Figure 1) (data going back to 1980 is available but )
+
+depdata_weighted <- ddply(depdata, .(year),summarize, weighted.average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE),n = length(waverage[is.na(waverage) == FALSE]))
+depdata_weighted <- depdata_weighted[depdata_weighted$year>1999,]
+
+write.csv(depdata_2019_ranking, "final-outputs/npv_ranks_2019.csv")
+
 
 
 
