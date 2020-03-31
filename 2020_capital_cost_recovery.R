@@ -14,17 +14,23 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(readxl)
 library(reshape2)
 library(plyr)
+library(OECD)
 
 
 #Read in dataset containing depreciation data
 depdata <- read.csv("source-data/cost_recovery_data.csv")
 
-#Drop non-OECD countries
+
+
+#Limit countries to OECD and EU countries
 depdata <- depdata[which(depdata$country=="AUS" 
                    | depdata$country=="AUT"
-                   | depdata$country=="BEL" 
+                   | depdata$country=="BEL"
+                   | depdata$country=="BGR"
                    | depdata$country=="CAN" 
-                   | depdata$country=="CHL" 
+                   | depdata$country=="CHL"
+                   | depdata$country=="HRV" 
+                   | depdata$country=="CYP"
                    | depdata$country=="CZE" 
                    | depdata$country=="DNK" 
                    | depdata$country=="EST" 
@@ -42,12 +48,14 @@ depdata <- depdata[which(depdata$country=="AUS"
                    | depdata$country=="LVA"
                    | depdata$country=="LTU"
                    | depdata$country=="LUX"
+                   | depdata$country=="MLT" 
                    | depdata$country=="MEX"
                    | depdata$country=="NLD"
                    | depdata$country=="NZL"
                    | depdata$country=="NOR"
                    | depdata$country=="POL"
                    | depdata$country=="PRT"
+                   | depdata$country=="ROU" 
                    | depdata$country=="SVK"
                    | depdata$country=="SVN"
                    | depdata$country=="ESP"
@@ -159,10 +167,7 @@ summary(depdata$taxdepintangibltype)
 #Treat SL3 as SL2
 depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.frame(sapply(depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")], function(x) gsub("SL3", "SL2", x)))
 
-#Treat "DB DB SL" as DB with switch to SL ("DB DB SL" -> "DB or SL")
-
-###or really as initial DB??
-
+#Treat "DB DB SL" as initialDB ("DB DB SL" -> "initialDB")
 depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.frame(sapply(depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")], function(x) gsub("DB DB SL", "initialDB", x)))
 
 
@@ -361,10 +366,6 @@ colnames(gdp_long)[colnames(gdp_long)=="value"] <- "gdp"
 #Merge net present value data with GDP data
 depdata <- merge(depdata, gdp_long, by =c("country", "year"), all=FALSE)
 
-#Weigh weighted net present values by GDP for all years
-#depdata$waverage_by_gdp <- weighted.mean(depdata$waverage, depdata$gdp, na.rm = TRUE)
-
-
 #Write data file#
 write.csv(depdata, "final-data/npv_all_years.csv")
 
@@ -373,15 +374,18 @@ write.csv(depdata, "final-data/npv_all_years.csv")
 
 #Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2019" (Table 1)
 
-depdata_2019 <- subset(depdata, year==2019)
+#Limit to OECD countries and 2019
+depdata_oecd_2019 <- subset(depdata, year==2019)
+depdata_oecd_2019 <- subset(depdata_oecd_2019, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
-depdata_2019_ranking <- depdata_2019
+#Create rankings
+depdata_2019_ranking <- depdata_oecd_2019
 
 depdata_2019_ranking$buildings_rank <- rank(-depdata_2019_ranking$`buildings_cost_recovery`,ties.method = "min")
 depdata_2019_ranking$machines_rank <- rank(-depdata_2019_ranking$`machines_cost_recovery`,ties.method = "min")
 depdata_2019_ranking$intangibles_rank <- rank(-depdata_2019_ranking$`intangibles_cost_recovery`,ties.method = "min")
 
-depdata_2019_ranking$waverage_rank <- rank(-depdata_2019_ranking$`waverage`,ties.method = "min")
+depdata_2019_ranking$waverage_rank <- rank(-depdata_2019_ranking$`waverage`, ties.method = "min")
 
 depdata_2019_ranking <- subset(depdata_2019_ranking, select = -c(year, iso_3, average, gdp))
 
@@ -394,6 +398,7 @@ depdata_2019_ranking$buildings_cost_recovery <- round(depdata_2019_ranking$build
 depdata_2019_ranking$machines_cost_recovery <- round(depdata_2019_ranking$machines_cost_recovery, digits=3)
 depdata_2019_ranking$intangibles_cost_recovery <- round(depdata_2019_ranking$intangibles_cost_recovery, digits=3)
 
+#Rename column headers
 colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="country"] <- "Country"
 colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="waverage"] <- "Weighted Average Allowance"
 colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="waverage_rank"] <- "Weighted Average Rank"
@@ -409,17 +414,92 @@ write.csv(depdata_2019_ranking, "final-outputs/npv_ranks_2019.csv")
 
 #Data for graph: "Net Present Value of Capital Allowances, OECD, 2000-2019" (Figure 1) (data going back to 1980 is available but )
 
-depdata_weighted <- ddply(depdata, .(year),summarize, weighted.average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE),n = length(waverage[is.na(waverage) == FALSE]))
+#Limit to OECD countries
+depdata_oecd_all_years <- subset(depdata, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
+
+depdata_weighted <- ddply(depdata_oecd_all_years, .(year),summarize, weighted_average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE),n = length(waverage[is.na(waverage) == FALSE]))
 depdata_weighted <- depdata_weighted[depdata_weighted$year>1999,]
 
-write.csv(depdata_2019_ranking, "final-outputs/npv_ranks_2019.csv")
+write.csv(depdata_weighted, "final-outputs/npv_weighted_timeseries.csv")
+
+
+#Data for graph: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2019" (Figure 2)
+
+#Read in dataset
+dataset_list <- get_datasets()
+search_dataset("Corporate", data= dataset_list)
+oecd_rates <- ("TABLE_II1")
+dstruc <- get_data_structure(oecd_rates)
+str(dstruc, max.level = 1)
+#dstruc$VAR_DESC
+#dstruc$CORP_TAX
+
+oecd_rates <- get_dataset("TABLE_II1", start_time = 2000)
+
+#Keep and rename selected columns
+oecd_rates <- subset(oecd_rates, oecd_rates$CORP_TAX=="COMB_CIT_RATE")
+oecd_rates <- subset(oecd_rates, select = -c(CORP_TAX,TIME_FORMAT))
+
+colnames(oecd_rates)[colnames(oecd_rates)=="obsValue"] <- "rate"
+colnames(oecd_rates)[colnames(oecd_rates)=="obsTime"] <- "year"
+colnames(oecd_rates)[colnames(oecd_rates)=="COU"] <- "iso_3"
+
+#Add country names
+oecd_rates <- merge(oecd_rates, country_names, by='iso_3')
+
+#Add GDP (first rename country names)
+oecd_rates$country <- as.character(oecd_rates$country)
+
+oecd_rates$country[oecd_rates$country == "Czechia"] <- "Czech Republic"
+oecd_rates$country[oecd_rates$country == "United Kingdom of Great Britain and Northern Ireland"] <- "United Kingdom"
+oecd_rates$country[oecd_rates$country == "Republic of Korea"] <- "Korea"
+oecd_rates$country[oecd_rates$country == "United States of America"] <- "United States"
+
+oecd_rates <- merge(oecd_rates, gdp_long, by =c("country", "year"), all=FALSE)
+
+#Weigh corporate rates by GDP
+oecd_rates_weighted <- ddply(oecd_rates, .(year),summarize, weighted_average = weighted.mean(rate, gdp, na.rm = TRUE), average = mean(rate, na.rm = TRUE),n = length(rate[is.na(rate) == FALSE]))
+
+write.csv(oecd_rates_weighted, "final-outputs/cit_rates_timeseries.csv")
 
 
 
+#Data for map: "Net Present Value of Capital Allowances in Europe"
+depdata_europe_2019 <- subset(depdata, year==2019)
+depdata_europe_2019 <- subset(depdata_europe_2019, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
 
-#data[c('taxdeprbuildtimesl')][data$country == "USA" & data$year == 2018,] <- 40
-#data[c('taxdeprbuildsl')][data$country == "USA" & data$year == 2018,] <- 0.025
+#Drop columns that are not needed
+depdata_europe_2019 <- subset(depdata_europe_2019, select = c(iso_3, country, year, waverage))
 
-data$year<-data$year+1
+#Sort data
+depdata_europe_2019 <- depdata_europe_2019[order(-depdata_europe_2019$waverage, depdata_europe_2019$country),]
 
-#gdp_long <- subset(gdp_iso_long, year != 1996.1)
+#Add ranking
+depdata_europe_2019$rank <- rank(-depdata_europe_2019$`waverage`,ties.method = "min")
+
+write.csv(depdata_europe_2019, "final-outputs/npv_europe.csv")
+
+#Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
+
+#Limit to EU countries and 2019
+depdata_eu27_2019 <- subset(depdata, year==2019)
+depdata_eu27_2019 <- subset(depdata_eu27_2019, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "ISL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "NOR" & iso_3 != "CHE" & iso_3 != "TUR" & iso_3 != "GBR" & iso_3 != "USA")
+
+#Drop columns that are not needed
+depdata_eu27_2019 <- subset(depdata_eu27_2019, select = c(iso_3, country, year, waverage))
+
+#Sort data
+depdata_eu27_2019 <- depdata_eu27_2019[order(-depdata_eu27_2019$waverage, depdata_eu27_2019$country),]
+
+#Add CCTB data
+cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2019), waverage = c(0.679178398))
+depdata_eu27_2019 <- rbind(depdata_eu27_2019, cctb)
+
+write.csv(depdata_eu27_2019, "final-outputs/eu_cctb.csv")
+
+
+#Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2019"
+
+average_assets <- ddply(depdata_oecd_2019, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
+
+write.csv(average_assets, "final-outputs/asset_averages.csv")
