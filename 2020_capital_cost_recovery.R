@@ -251,6 +251,7 @@ for (x in 1:length(depdata$taxdeprbuilddb)){
   }
 }
 
+
 #intangibles_cost_recovery
 
 #DB
