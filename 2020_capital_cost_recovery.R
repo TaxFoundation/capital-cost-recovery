@@ -17,56 +17,56 @@ library(plyr)
 library(OECD)
 
 
-#Read in dataset containing depreciation data#
-depdata <- read.csv("source-data/cost_recovery_data.csv")
+#Read in dataset containing depreciation data####
+data <- read.csv("source-data/cost_recovery_data.csv")
 
 
 #Limit countries to OECD and EU countries
-depdata <- depdata[which(depdata$country=="AUS" 
-                   | depdata$country=="AUT"
-                   | depdata$country=="BEL"
-                   | depdata$country=="BGR"
-                   | depdata$country=="CAN" 
-                   | depdata$country=="CHL"
-                   | depdata$country=="HRV" 
-                   | depdata$country=="CYP"
-                   | depdata$country=="CZE" 
-                   | depdata$country=="DNK" 
-                   | depdata$country=="EST" 
-                   | depdata$country=="FIN" 
-                   | depdata$country=="FRA"
-                   | depdata$country=="DEU"
-                   | depdata$country=="GRC"
-                   | depdata$country=="HUN"
-                   | depdata$country=="ISL"
-                   | depdata$country=="IRL"
-                   | depdata$country=="ISR"
-                   | depdata$country=="ITA"
-                   | depdata$country=="JPN"
-                   | depdata$country=="KOR"
-                   | depdata$country=="LVA"
-                   | depdata$country=="LTU"
-                   | depdata$country=="LUX"
-                   | depdata$country=="MLT" 
-                   | depdata$country=="MEX"
-                   | depdata$country=="NLD"
-                   | depdata$country=="NZL"
-                   | depdata$country=="NOR"
-                   | depdata$country=="POL"
-                   | depdata$country=="PRT"
-                   | depdata$country=="ROU" 
-                   | depdata$country=="SVK"
-                   | depdata$country=="SVN"
-                   | depdata$country=="ESP"
-                   | depdata$country=="SWE"
-                   | depdata$country=="CHE"
-                   | depdata$country=="TUR"
-                   | depdata$country=="GBR"
-                   | depdata$country=="USA"),]
+data <- data[which(data$country=="AUS" 
+                   | data$country=="AUT"
+                   | data$country=="BEL"
+                   | data$country=="BGR"
+                   | data$country=="CAN" 
+                   | data$country=="CHL"
+                   | data$country=="HRV" 
+                   | data$country=="CYP"
+                   | data$country=="CZE" 
+                   | data$country=="DNK" 
+                   | data$country=="EST" 
+                   | data$country=="FIN" 
+                   | data$country=="FRA"
+                   | data$country=="DEU"
+                   | data$country=="GRC"
+                   | data$country=="HUN"
+                   | data$country=="ISL"
+                   | data$country=="IRL"
+                   | data$country=="ISR"
+                   | data$country=="ITA"
+                   | data$country=="JPN"
+                   | data$country=="KOR"
+                   | data$country=="LVA"
+                   | data$country=="LTU"
+                   | data$country=="LUX"
+                   | data$country=="MLT" 
+                   | data$country=="MEX"
+                   | data$country=="NLD"
+                   | data$country=="NZL"
+                   | data$country=="NOR"
+                   | data$country=="POL"
+                   | data$country=="PRT"
+                   | data$country=="ROU" 
+                   | data$country=="SVK"
+                   | data$country=="SVN"
+                   | data$country=="ESP"
+                   | data$country=="SWE"
+                   | data$country=="CHE"
+                   | data$country=="TUR"
+                   | data$country=="GBR"
+                   | data$country=="USA"),]
 
 
 #Drop columns that are not needed
-depdata <- subset(depdata, select = -c(inventoryval, total, statutory_corptax, EATR, EMTR, ace))
+data <- subset(data, select = -c(inventoryval, total, statutory_corptax, EATR, EMTR, ace))
 
 
 #Define functions for present discounted value calculations#
@@ -156,169 +156,169 @@ CZK <- function(rate,i){
 
 
 #Debug summarys#
-summary(depdata)
-summary(depdata$taxdepbuildtype)
-summary(depdata$taxdepmachtype)
-summary(depdata$taxdepintangibltype)
+summary(data)
+summary(data$taxdepbuildtype)
+summary(data$taxdepmachtype)
+summary(data$taxdepintangibltype)
 
 
-#Replace odd depreciation systems ("SL3" and "DB DB SL")#
+#Replace odd depreciation systems ("SL3" and "DB DB SL")####
 
 #Treat SL3 as SL2
-depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.frame(sapply(depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")], function(x) gsub("SL3", "SL2", x)))
+data[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.frame(sapply(data[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")], function(x) gsub("SL3", "SL2", x)))
 
 #Treat "DB DB SL" as initialDB ("DB DB SL" -> "initialDB")
-depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.frame(sapply(depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")], function(x) gsub("DB DB SL", "initialDB", x)))
+data[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.frame(sapply(data[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")], function(x) gsub("DB DB SL", "initialDB", x)))
 
 
 #Corrections to the dataset#
 
 #Ireland's machine schedules are messed up for the years 1988-1991 (they are way too high). We assume that this is the fix:
-depdata[c('taxdepmachtimedb')][depdata$country == "IRL" & depdata$year >= 1988 & depdata$year <= 1991,] <- 1
+data[c('taxdepmachtimedb')][data$country == "IRL" & data$year >= 1988 & data$year <= 1991,] <- 1
 
 #The US' 3-schedule straight-line ACRS for machinery is coded incorrectly for the years 1983-1986 (since this model does not support SL3 it is assumed to be SL2)
-depdata[c('taxdepmachtimesl')][depdata$country == "USA" & depdata$year >1982 & depdata$year<1987,] <- 4
+data[c('taxdepmachtimesl')][data$country == "USA" & data$year >1982 & data$year<1987,] <- 4
 
 
-#Calculate net present values for the different asset types#
+#Calculate net present values for the different asset types####
 
-#machines_cost_recovery
+#machines_cost_recovery####
 
 #DB
-depdata$machines_cost_recovery[depdata$taxdepmachtype == "DB" & !is.na(depdata$taxdepmachtype)] <- DB(depdata$taxdeprmachdb[depdata$taxdepmachtype == "DB" & !is.na(depdata$taxdepmachtype)],0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)] <- DB(data$taxdeprmachdb[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)],0.075)
 
 #SL
-depdata$machines_cost_recovery[depdata$taxdepmachtype == "SL" & !is.na(depdata$taxdepmachtype)] <- SL(depdata$taxdeprmachsl[depdata$taxdepmachtype == "SL" & !is.na(depdata$taxdepmachtype)],0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "SL" & !is.na(data$taxdepmachtype)] <- SL(data$taxdeprmachsl[data$taxdepmachtype == "SL" & !is.na(data$taxdepmachtype)],0.075)
 
 #initialDB
-depdata$machines_cost_recovery[depdata$taxdepmachtype == "initialDB" & !is.na(depdata$taxdepmachtype)] <- initialDB(depdata$taxdeprmachdb[depdata$taxdepmachtype == "initialDB" & !is.na(depdata$taxdepmachtype)],
-  depdata$taxdeprmachsl[depdata$taxdepmachtype == "initialDB" & !is.na(depdata$taxdepmachtype)], 0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "initialDB" & !is.na(data$taxdepmachtype)] <- initialDB(data$taxdeprmachdb[data$taxdepmachtype == "initialDB" & !is.na(data$taxdepmachtype)],
+  data$taxdeprmachsl[data$taxdepmachtype == "initialDB" & !is.na(data$taxdepmachtype)], 0.075)
 
 #DB or SL
-depdata$machines_cost_recovery[depdata$taxdepmachtype == "DB or SL" & !is.na(depdata$taxdepmachtype)] <- DBSL2(depdata$taxdeprmachdb[depdata$taxdepmachtype == "DB or SL" & !is.na(depdata$taxdepmachtype)],
-  depdata$taxdepmachtimedb[depdata$taxdepmachtype == "DB or SL" & !is.na(depdata$taxdepmachtype)],
-  depdata$taxdeprmachsl[depdata$taxdepmachtype == "DB or SL" & !is.na(depdata$taxdepmachtype)],
-  depdata$taxdepmachtimesl[depdata$taxdepmachtype == "DB or SL" & !is.na(depdata$taxdepmachtype)], 0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)] <- DBSL2(data$taxdeprmachdb[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)],
+  data$taxdepmachtimedb[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)],
+  data$taxdeprmachsl[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)],
+  data$taxdepmachtimesl[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)], 0.075)
 
 #SL2
-depdata$machines_cost_recovery[depdata$taxdepmachtype == "SL2" & !is.na(depdata$taxdepmachtype)] <- SL2(depdata$taxdeprmachdb[depdata$taxdepmachtype == "SL2" & !is.na(depdata$taxdepmachtype)],
-  depdata$taxdepmachtimedb[depdata$taxdepmachtype == "SL2" & !is.na(depdata$taxdepmachtype)],
-  depdata$taxdeprmachsl[depdata$taxdepmachtype == "SL2" & !is.na(depdata$taxdepmachtype)],
-  depdata$taxdepmachtimesl[depdata$taxdepmachtype == "SL2" & !is.na(depdata$taxdepmachtype)], 0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)] <- SL2(data$taxdeprmachdb[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)],
+  data$taxdepmachtimedb[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)],
+  data$taxdeprmachsl[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)],
+  data$taxdepmachtimesl[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)], 0.075)
 
 #SLITA
-depdata$machines_cost_recovery[depdata$taxdepmachtype == "SLITA" & !is.na(depdata$taxdepmachtype)] <- SL(depdata$taxdeprmachsl[depdata$taxdepmachtype == "SLITA" & !is.na(depdata$taxdepmachtype)],0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "SLITA" & !is.na(data$taxdepmachtype)] <- SL(data$taxdeprmachsl[data$taxdepmachtype == "SLITA" & !is.na(data$taxdepmachtype)],0.075)
 
 #CZK
-for (x in 1:length(depdata$taxdeprmachdb)){
-  if(grepl("CZK",depdata$taxdepmachtype[x]) == TRUE){
-    depdata$machines_cost_recovery[x] <- CZK(depdata$taxdeprmachdb[x], 0.075)
+for (x in 1:length(data$taxdeprmachdb)){
+  if(grepl("CZK",data$taxdepmachtype[x]) == TRUE){
+    data$machines_cost_recovery[x] <- CZK(data$taxdeprmachdb[x], 0.075)
   }
 }
 
 
-#buildings_cost_recovery
+#buildings_cost_recovery####
 
 #DB
-depdata$buildings_cost_recovery[depdata$taxdepbuildtype == "DB" & !is.na(depdata$taxdepbuildtype)] <- DB(depdata$taxdeprbuilddb[depdata$taxdepbuildtype == "DB" & !is.na(depdata$taxdepbuildtype)],0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)] <- DB(data$taxdeprbuilddb[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)],0.075)
 
 #SL
-depdata$buildings_cost_recovery[depdata$taxdepbuildtype == "SL" & !is.na(depdata$taxdepbuildtype)] <- SL(depdata$taxdeprbuildsl[depdata$taxdepbuildtype == "SL" & !is.na(depdata$taxdepbuildtype)],0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "SL" & !is.na(data$taxdepbuildtype)] <- SL(data$taxdeprbuildsl[data$taxdepbuildtype == "SL" & !is.na(data$taxdepbuildtype)],0.075)
 
 #initialDB
-depdata$buildings_cost_recovery[depdata$taxdepbuildtype == "initialDB" & !is.na(depdata$taxdepbuildtype)] <- initialDB(depdata$taxdeprbuilddb[depdata$taxdepbuildtype == "initialDB" & !is.na(depdata$taxdepbuildtype)],
-  depdata$taxdeprbuildsl[depdata$taxdepbuildtype == "initialDB" & !is.na(depdata$taxdepbuildtype)], 0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "initialDB" & !is.na(data$taxdepbuildtype)] <- initialDB(data$taxdeprbuilddb[data$taxdepbuildtype == "initialDB" & !is.na(data$taxdepbuildtype)],
+  data$taxdeprbuildsl[data$taxdepbuildtype == "initialDB" & !is.na(data$taxdepbuildtype)], 0.075)
 
 #DB or SL
-depdata$buildings_cost_recovery[depdata$taxdepbuildtype == "DB or SL" & !is.na(depdata$taxdepbuildtype)] <- DBSL2(depdata$taxdeprbuilddb[depdata$taxdepbuildtype == "DB or SL" & !is.na(depdata$taxdepbuildtype)],
-  depdata$taxdeprbuildtimedb[depdata$taxdepbuildtype == "DB or SL" & !is.na(depdata$taxdepbuildtype)],
-  depdata$taxdeprbuildsl[depdata$taxdepbuildtype == "DB or SL" & !is.na(depdata$taxdepbuildtype)],
-  depdata$taxdeprbuildtimesl[depdata$taxdepbuildtype == "DB or SL" & !is.na(depdata$taxdepbuildtype)], 0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)] <- DBSL2(data$taxdeprbuilddb[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)],
+  data$taxdeprbuildtimedb[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)],
+  data$taxdeprbuildsl[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)],
+  data$taxdeprbuildtimesl[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)], 0.075)
 
 #SL2
-depdata$buildings_cost_recovery[depdata$taxdepbuildtype == "SL2" & !is.na(depdata$taxdepbuildtype)] <- SL2(depdata$taxdeprbuilddb[depdata$taxdepbuildtype == "SL2" & !is.na(depdata$taxdepbuildtype)],
-  depdata$taxdeprbuildtimedb[depdata$taxdepbuildtype == "SL2" & !is.na(depdata$taxdepbuildtype)],
-  depdata$taxdeprbuildsl[depdata$taxdepbuildtype == "SL2" & !is.na(depdata$taxdepbuildtype)],
-  depdata$taxdeprbuildtimesl[depdata$taxdepbuildtype == "SL2" & !is.na(depdata$taxdepbuildtype)], 0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)] <- SL2(data$taxdeprbuilddb[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)],
+  data$taxdeprbuildtimedb[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)],
+  data$taxdeprbuildsl[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)],
+  data$taxdeprbuildtimesl[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)], 0.075)
 
 #SLITA
-depdata$buildings_cost_recovery[depdata$taxdepbuildtype == "SLITA" & !is.na(depdata$taxdepbuildtype)]<-SL(depdata$taxdeprbuildsl[depdata$taxdepbuildtype == "SLITA" & !is.na(depdata$taxdepbuildtype)],0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "SLITA" & !is.na(data$taxdepbuildtype)]<-SL(data$taxdeprbuildsl[data$taxdepbuildtype == "SLITA" & !is.na(data$taxdepbuildtype)],0.075)
 
 #CZK
-for (x in 1:length(depdata$taxdeprbuilddb)){
-  if(grepl("CZK",depdata$taxdepbuildtype[x]) == TRUE){
-    depdata$buildings_cost_recovery[x] <- CZK(depdata$taxdeprbuilddb[x], 0.075)
+for (x in 1:length(data$taxdeprbuilddb)){
+  if(grepl("CZK",data$taxdepbuildtype[x]) == TRUE){
+    data$buildings_cost_recovery[x] <- CZK(data$taxdeprbuilddb[x], 0.075)
   }
 }
 
 
-#intangibles_cost_recovery
+#intangibles_cost_recovery####
 
 #DB
-depdata$intangibles_cost_recovery[depdata$taxdepintangibltype == "DB" & !is.na(depdata$taxdepintangibltype)] <- DB(depdata$taxdeprintangibldb[depdata$taxdepintangibltype == "DB" & !is.na(depdata$taxdepintangibltype)], 0.075)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)] <- DB(data$taxdeprintangibldb[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)], 0.075)
 
 #SL
-depdata$intangibles_cost_recovery[depdata$taxdepintangibltype == "SL" & !is.na(depdata$taxdepintangibltype)] <- SL(depdata$taxdeprintangiblsl[depdata$taxdepintangibltype == "SL" & !is.na(depdata$taxdepintangibltype)], 0.075)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "SL" & !is.na(data$taxdepintangibltype)] <- SL(data$taxdeprintangiblsl[data$taxdepintangibltype == "SL" & !is.na(data$taxdepintangibltype)], 0.075)
 
 #initialDB
-depdata$intangibles_cost_recovery[depdata$taxdepintangibltype == "initialDB" & !is.na(depdata$taxdepintangibltype)] <- initialDB(depdata$taxdeprintangibldb[depdata$taxdepintangibltype == "initialDB" & !is.na(depdata$taxdepintangibltype)],
-  depdata$taxdeprintangiblsl[depdata$taxdepintangibltype == "initialDB" & !is.na(depdata$taxdepintangibltype)], 0.075)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "initialDB" & !is.na(data$taxdepintangibltype)] <- initialDB(data$taxdeprintangibldb[data$taxdepintangibltype == "initialDB" & !is.na(data$taxdepintangibltype)],
+  data$taxdeprintangiblsl[data$taxdepintangibltype == "initialDB" & !is.na(data$taxdepintangibltype)], 0.075)
 
 #DB or SL
-depdata$intangibles_cost_recovery[depdata$taxdepintangibltype == "DB or SL" & !is.na(depdata$taxdepintangibltype)] <- DBSL2(depdata$taxdeprintangibldb[depdata$taxdepintangibltype == "DB or SL" & !is.na(depdata$taxdepintangibltype)],
-  depdata$taxdepintangibltimedb[depdata$taxdepintangibltype == "DB or SL" & !is.na(depdata$taxdepintangibltype)],
-  depdata$taxdeprintangiblsl[depdata$taxdepintangibltype == "DB or SL" & !is.na(depdata$taxdepintangibltype)],
-  depdata$taxdepintangibltimesl[depdata$taxdepintangibltype == "DB or SL" & !is.na(depdata$taxdepintangibltype)], 0.075)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)] <- DBSL2(data$taxdeprintangibldb[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)],
+  data$taxdepintangibltimedb[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)],
+  data$taxdeprintangiblsl[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)],
+  data$taxdepintangibltimesl[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)], 0.075)
 
 #SL2
-depdata$intangibles_cost_recovery[depdata$taxdepintangibltype == "SL2" & !is.na(depdata$taxdepintangibltype)] <- SL2(depdata$taxdeprintangibldb[depdata$taxdepintangibltype == "SL2" & !is.na(depdata$taxdepintangibltype)],
-  depdata$taxdepintangibltimedb[depdata$taxdepintangibltype == "SL2" & !is.na(depdata$taxdepintangibltype)],
-  depdata$taxdeprintangiblsl[depdata$taxdepintangibltype == "SL2" & !is.na(depdata$taxdepintangibltype)],
-  depdata$taxdepintangibltimesl[depdata$taxdepintangibltype == "SL2" & !is.na(depdata$taxdepintangibltype)], 0.075)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)] <- SL2(data$taxdeprintangibldb[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
+  data$taxdepintangibltimedb[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
+  data$taxdeprintangiblsl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
+  data$taxdepintangibltimesl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)], 0.075)
 
 #In 2000, Estonia moved to a cash-flow type business tax - all allowances need to be coded as 1
-depdata[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][depdata$country == "EST" & depdata$year >=2000,] <- 1
+data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "EST" & data$year >=2000,] <- 1
 
 #In 2018, Latvia also moved to a cash-flow type business tax
-depdata[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][depdata$country == "LVA" & depdata$year >=2018,] <- 1
+data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "LVA" & data$year >=2018,] <- 1
 
 #In fall 2018, Canada introduced full expensing for machinery
-depdata[c('machines_cost_recovery')][depdata$country == "CAN" & depdata$year >= 2018,] <- 1
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year >= 2018,] <- 1
 
 #Adjust USA data to include bonus depreciation for machinery
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2002,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2002,] * 0.70) + 0.30
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2003,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2003,] * 0.70) + 0.30
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2004,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2004,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2008,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2008,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2009,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2009,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2010,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2010,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2011,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2011,] * 0.00) + 1.00
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2012,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2012,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2013,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2013,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2014,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2014,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2015,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2015,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2016,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2016,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2017,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2017,] * 0.50) + 0.50
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2018,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2018,] * 0.00) + 1.00
-depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2019,] <- (depdata[c('machines_cost_recovery')][depdata$country == "USA" & depdata$year == 2019,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2002,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2002,] * 0.70) + 0.30
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2003,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2003,] * 0.70) + 0.30
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2004,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2004,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2008,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2008,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2009,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2009,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2010,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2010,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2011,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2011,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2012,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2012,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2013,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2013,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2014,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2014,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2015,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2015,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2016,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2016,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2017,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2017,] * 0.50) + 0.50
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2018,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2018,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] * 0.00) + 1.00
 
 #Only keep columns with the calculated net present values
-depdata <- subset(depdata, select = c(country, year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
+data <- subset(data, select = c(country, year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
 
 
 #Weighing the calculated net present values of each asset by its respective capital stock share (based on Devereux 2012)
-depdata$weighted_machines <- depdata$machines*.4391081
-depdata$weighted_buildings <- depdata$buildings*.4116638
-depdata$weighted_intangibles <- depdata$intangibles*.1492281
+data$weighted_machines <- data$machines*.4391081
+data$weighted_buildings <- data$buildings*.4116638
+data$weighted_intangibles <- data$intangibles*.1492281
 
-depdata$waverage <- rowSums(depdata[,c("weighted_machines","weighted_buildings","weighted_intangibles")])
-depdata$average<-rowMeans(depdata[,c("machines_cost_recovery","buildings_cost_recovery","intangibles_cost_recovery")])
+data$waverage <- rowSums(data[,c("weighted_machines","weighted_buildings","weighted_intangibles")])
+data$average<-rowMeans(data[,c("machines_cost_recovery","buildings_cost_recovery","intangibles_cost_recovery")])
 
 #Drop columns with weighted net present values by asset type
-depdata <- subset(depdata, select = -c(weighted_machines, weighted_buildings, weighted_intangibles))
+data <- subset(data, select = -c(weighted_machines, weighted_buildings, weighted_intangibles))
 
 
-#Import and match country names by ISO-3 codes#
+#Import and match country names by ISO-3 codes#####
 
 #Read in country name file
 country_names <- read.csv("source-data/country_codes.csv")
@@ -329,14 +329,14 @@ country_names <- subset(country_names, select = c(official_name_en, ISO3166.1.Al
 colnames(country_names)[colnames(country_names)=="official_name_en"] <- "country"
 colnames(country_names)[colnames(country_names)=="ISO3166.1.Alpha.3"] <- "iso_3"
 
-#Rename column "country" in depdata
-colnames(depdata)[colnames(depdata)=="country"] <- "iso_3"
+#Rename column "country" in data
+colnames(data)[colnames(data)=="country"] <- "iso_3"
 
-#Add country names to depdata
-depdata <- merge(country_names, depdata, by='iso_3')
+#Add country names to data
+data <- merge(country_names, data, by='iso_3')
 
 
-#Adding GDP to the dataset###
+#Adding GDP to the dataset#######
 
 #Reading in and merging GDP datasets
 gdp_historical <- read_excel("source-data/gdp_historical.xlsx", range = "A12:AN230")
@@ -348,14 +348,14 @@ gdp_projected <- subset(gdp_projected, select = c(Country, `2019`))
 gdp <- merge(gdp_historical,gdp_projected, by="Country")
 colnames(gdp)[colnames(gdp)=="Country"] <- "country"
 
-#Renaming country names so depdata and gdp can be matched
+#Renaming country names so data and gdp can be matched
 gdp$country <- as.character(gdp$country)
-depdata$country <- as.character(depdata$country)
+data$country <- as.character(data$country)
 
-depdata$country[depdata$country == "Czechia"] <- "Czech Republic"
-depdata$country[depdata$country == "United Kingdom of Great Britain and Northern Ireland"] <- "United Kingdom"
-depdata$country[depdata$country == "Republic of Korea"] <- "Korea"
-depdata$country[depdata$country == "United States of America"] <- "United States"
+data$country[data$country == "Czechia"] <- "Czech Republic"
+data$country[data$country == "United Kingdom of Great Britain and Northern Ireland"] <- "United Kingdom"
+data$country[data$country == "Republic of Korea"] <- "Korea"
+data$country[data$country == "United States of America"] <- "United States"
 
 #Change format of GDP data from wide to long
 gdp_long <- (melt(gdp, id=c("country")))
@@ -363,68 +363,68 @@ colnames(gdp_long)[colnames(gdp_long)=="variable"] <- "year"
 colnames(gdp_long)[colnames(gdp_long)=="value"] <- "gdp"
 
 #Merge net present value data with GDP data
-depdata <- merge(depdata, gdp_long, by =c("country", "year"), all=FALSE)
+data <- merge(data, gdp_long, by =c("country", "year"), all=FALSE)
 
 #Write data file#
-write.csv(depdata, "final-data/npv_all_years.csv")
+write.csv(data, "final-data/npv_all_years.csv")
 
 
-#Create output tables and data for the graphs included in the report#
+#Create output tables and data for the graphs included in the report#####
 
 #Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2019"
 
 #Limit to OECD countries and 2019
-depdata_oecd_2019 <- subset(depdata, year==2019)
-depdata_oecd_2019 <- subset(depdata_oecd_2019, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
+data_oecd_2019 <- subset(data, year==2019)
+data_oecd_2019 <- subset(data_oecd_2019, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
 #Create rankings
-depdata_2019_ranking <- depdata_oecd_2019
+data_2019_ranking <- data_oecd_2019
 
-depdata_2019_ranking$buildings_rank <- rank(-depdata_2019_ranking$`buildings_cost_recovery`,ties.method = "min")
-depdata_2019_ranking$machines_rank <- rank(-depdata_2019_ranking$`machines_cost_recovery`,ties.method = "min")
-depdata_2019_ranking$intangibles_rank <- rank(-depdata_2019_ranking$`intangibles_cost_recovery`,ties.method = "min")
+data_2019_ranking$buildings_rank <- rank(-data_2019_ranking$`buildings_cost_recovery`,ties.method = "min")
+data_2019_ranking$machines_rank <- rank(-data_2019_ranking$`machines_cost_recovery`,ties.method = "min")
+data_2019_ranking$intangibles_rank <- rank(-data_2019_ranking$`intangibles_cost_recovery`,ties.method = "min")
 
-depdata_2019_ranking$waverage_rank <- rank(-depdata_2019_ranking$`waverage`, ties.method = "min")
+data_2019_ranking$waverage_rank <- rank(-data_2019_ranking$`waverage`, ties.method = "min")
 
-depdata_2019_ranking <- subset(depdata_2019_ranking, select = -c(year, iso_3, average, gdp))
+data_2019_ranking <- subset(data_2019_ranking, select = -c(year, iso_3, average, gdp))
 
 #Order columns and sort data
-depdata_2019_ranking <- depdata_2019_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
+data_2019_ranking <- data_2019_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
 
-depdata_2019_ranking <- depdata_2019_ranking[order(-depdata_2019_ranking$waverage, depdata_2019_ranking$country),]
+data_2019_ranking <- data_2019_ranking[order(-data_2019_ranking$waverage, data_2019_ranking$country),]
 
 #Round digits
-depdata_2019_ranking$waverage <- round(depdata_2019_ranking$waverage, digits=3)
-depdata_2019_ranking$buildings_cost_recovery <- round(depdata_2019_ranking$buildings_cost_recovery, digits=3)
-depdata_2019_ranking$machines_cost_recovery <- round(depdata_2019_ranking$machines_cost_recovery, digits=3)
-depdata_2019_ranking$intangibles_cost_recovery <- round(depdata_2019_ranking$intangibles_cost_recovery, digits=3)
+data_2019_ranking$waverage <- round(data_2019_ranking$waverage, digits=3)
+data_2019_ranking$buildings_cost_recovery <- round(data_2019_ranking$buildings_cost_recovery, digits=3)
+data_2019_ranking$machines_cost_recovery <- round(data_2019_ranking$machines_cost_recovery, digits=3)
+data_2019_ranking$intangibles_cost_recovery <- round(data_2019_ranking$intangibles_cost_recovery, digits=3)
 
 #Rename column headers
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="country"] <- "Country"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="waverage"] <- "Weighted Average Allowance"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="waverage_rank"] <- "Weighted Average Rank"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="buildings_cost_recovery"] <- "Buildings Allowance"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="buildings_rank"] <- "Buildings Rank"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="machines_cost_recovery"] <- "Machinery Allowance"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="machines_rank"] <- "Machinery Rank"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
-colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="intangibles_rank"] <- "Intangibles Rank"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="country"] <- "Country"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="waverage"] <- "Weighted Average Allowance"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="waverage_rank"] <- "Weighted Average Rank"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="buildings_cost_recovery"] <- "Buildings Allowance"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="buildings_rank"] <- "Buildings Rank"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="machines_cost_recovery"] <- "Machinery Allowance"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="machines_rank"] <- "Machinery Rank"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
+colnames(data_2019_ranking)[colnames(data_2019_ranking)=="intangibles_rank"] <- "Intangibles Rank"
 
-write.csv(depdata_2019_ranking, "final-outputs/npv_ranks_2019.csv")
+write.csv(data_2019_ranking, "final-outputs/npv_ranks_2019.csv")
 
 
 #Data for graph: "Net Present Value of Capital Allowances, OECD, 2000-2019"
 
 #Limit to OECD countries
-depdata_oecd_all_years <- subset(depdata, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
+data_oecd_all_years <- subset(data, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
 #Calculate timeseries averages
-depdata_weighted <- ddply(depdata_oecd_all_years, .(year),summarize, weighted_average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE),n = length(waverage[is.na(waverage) == FALSE]))
+data_weighted <- ddply(data_oecd_all_years, .(year),summarize, weighted_average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE),n = length(waverage[is.na(waverage) == FALSE]))
 
 #Limit to years starting in 2000 (data for all OECD countries is available starting in 2000)
-depdata_weighted <- depdata_weighted[depdata_weighted$year>1999,]
+data_weighted <- data_weighted[data_weighted$year>1999,]
 
-write.csv(depdata_weighted, "final-outputs/npv_weighted_timeseries.csv")
+write.csv(data_weighted, "final-outputs/npv_weighted_timeseries.csv")
 
 
 #Data for graph: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2019"
@@ -470,43 +470,43 @@ write.csv(oecd_rates_weighted, "final-outputs/cit_rates_timeseries.csv")
 #Data for map: "Net Present Value of Capital Allowances in Europe"
 
 #Keep European countries and the year 2019
-depdata_europe_2019 <- subset(depdata, year==2019)
-depdata_europe_2019 <- subset(depdata_europe_2019, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
+data_europe_2019 <- subset(data, year==2019)
+data_europe_2019 <- subset(data_europe_2019, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
 
 #Drop columns that are not needed
-depdata_europe_2019 <- subset(depdata_europe_2019, select = c(iso_3, country, year, waverage))
+data_europe_2019 <- subset(data_europe_2019, select = c(iso_3, country, year, waverage))
 
 #Sort data
-depdata_europe_2019 <- depdata_europe_2019[order(-depdata_europe_2019$waverage, depdata_europe_2019$country),]
+data_europe_2019 <- data_europe_2019[order(-data_europe_2019$waverage, data_europe_2019$country),]
 
 #Add ranking
-depdata_europe_2019$rank <- rank(-depdata_europe_2019$`waverage`,ties.method = "min")
+data_europe_2019$rank <- rank(-data_europe_2019$`waverage`,ties.method = "min")
 
-write.csv(depdata_europe_2019, "final-outputs/npv_europe.csv")
+write.csv(data_europe_2019, "final-outputs/npv_europe.csv")
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
 
 #Limit to EU countries and 2019
-depdata_eu27_2019 <- subset(depdata, year==2019)
-depdata_eu27_2019 <- subset(depdata_eu27_2019, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "ISL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "NOR" & iso_3 != "CHE" & iso_3 != "TUR" & iso_3 != "GBR" & iso_3 != "USA")
+data_eu27_2019 <- subset(data, year==2019)
+data_eu27_2019 <- subset(data_eu27_2019, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "ISL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "NOR" & iso_3 != "CHE" & iso_3 != "TUR" & iso_3 != "GBR" & iso_3 != "USA")
 
 #Drop columns that are not needed
-depdata_eu27_2019 <- subset(depdata_eu27_2019, select = c(iso_3, country, year, waverage))
+data_eu27_2019 <- subset(data_eu27_2019, select = c(iso_3, country, year, waverage))
 
 #Sort data
-depdata_eu27_2019 <- depdata_eu27_2019[order(-depdata_eu27_2019$waverage, depdata_eu27_2019$country),]
+data_eu27_2019 <- data_eu27_2019[order(-data_eu27_2019$waverage, data_eu27_2019$country),]
 
 #Add weighted average of capital allowances under CCTB
 cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2019), waverage = c(0.679178398))
-depdata_eu27_2019 <- rbind(depdata_eu27_2019, cctb)
+data_eu27_2019 <- rbind(data_eu27_2019, cctb)
 
-write.csv(depdata_eu27_2019, "final-outputs/eu_cctb.csv")
+write.csv(data_eu27_2019, "final-outputs/eu_cctb.csv")
 
 
 #Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2019"
 
 #Calculate averages by asset type
-average_assets <- ddply(depdata_oecd_2019, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
+average_assets <- ddply(data_oecd_2019, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
 write.csv(average_assets, "final-outputs/asset_averages.csv")
