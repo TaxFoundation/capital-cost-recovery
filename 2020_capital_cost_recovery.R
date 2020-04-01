@@ -1,4 +1,4 @@
-###Cost recovery variables model###
+###Capital cost recovery model###
 
 
 #Clear working environment#
@@ -17,9 +17,8 @@ library(plyr)
 library(OECD)
 
 
-#Read in dataset containing depreciation data
+#Read in dataset containing depreciation data#
 depdata <- read.csv("source-data/cost_recovery_data.csv")
-
 
 
 #Limit countries to OECD and EU countries
@@ -64,6 +63,7 @@ depdata <- depdata[which(depdata$country=="AUS"
                    | depdata$country=="TUR"
                    | depdata$country=="GBR"
                    | depdata$country=="USA"),]
+
 
 #Drop columns that are not needed
 depdata <- subset(depdata, select = -c(inventoryval, total, statutory_corptax, EATR, EMTR, ace))
@@ -112,18 +112,6 @@ initialDB <- function(rate1,rate2,i){
   return(pdv)
 }
 
-#NOT USED?
-DBSL1 <- function(rate1,year1,rate2,year2,i){
-  value <- 1
-  DB <- 0
-  SL <- 0
-  for (x in 0:(year1-1)){
-    DB <- DB + (rate1*(1-rate1)^x)/(1+i)^x
-  }
-  SL <- ((rate2*(1+i))/i)*(1-(1^(year2)/(1+i)^(year2)))/(1+i)^(year1)
-  return(DB+SL)
-}
-
 #Declining-balance method with switch to straight-line method (DB or SL)
 DBSL2 <- function(rate1,year1,rate2,year2,i){
   top <- (rate1+(rate2/((1+i)^year1))/year2 )*(1+i)
@@ -154,6 +142,18 @@ CZK <- function(rate,i){
   return(pdv)
 }
 
+#Declining-balance and straight-line method (NOT USED)
+#DBSL1 <- function(rate1,year1,rate2,year2,i){
+#  value <- 1
+#  DB <- 0
+#  SL <- 0
+#  for (x in 0:(year1-1)){
+#    DB <- DB + (rate1*(1-rate1)^x)/(1+i)^x
+#  }
+#  SL <- ((rate2*(1+i))/i)*(1-(1^(year2)/(1+i)^(year2)))/(1+i)^(year1)
+#  return(DB+SL)
+#}
+
 
 #Debug summarys#
 summary(depdata)
@@ -173,7 +173,7 @@ depdata[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.dat
 
 #Corrections to the dataset#
 
-#Ireland's machine schedules are messed up for the years 1988-1991 (they are way too high). We assume that these are the fixes:
+#Ireland's machine schedules are messed up for the years 1988-1991 (they are way too high). We assume that this is the fix:
 depdata[c('taxdepmachtimedb')][depdata$country == "IRL" & depdata$year >= 1988 & depdata$year <= 1991,] <- 1
 
 #The US' 3-schedule straight-line ACRS for machinery is coded incorrectly for the years 1983-1986 (since this model does not support SL3 it is assumed to be SL2)
@@ -275,7 +275,7 @@ depdata$intangibles_cost_recovery[depdata$taxdepintangibltype == "SL2" & !is.na(
   depdata$taxdeprintangiblsl[depdata$taxdepintangibltype == "SL2" & !is.na(depdata$taxdepintangibltype)],
   depdata$taxdepintangibltimesl[depdata$taxdepintangibltype == "SL2" & !is.na(depdata$taxdepintangibltype)], 0.075)
 
-#In 2000, Estonia moved to a cash-flow type business tax. All allowances need to be coded as 1
+#In 2000, Estonia moved to a cash-flow type business tax - all allowances need to be coded as 1
 depdata[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][depdata$country == "EST" & depdata$year >=2000,] <- 1
 
 #In 2018, Latvia also moved to a cash-flow type business tax
@@ -317,7 +317,7 @@ depdata$average<-rowMeans(depdata[,c("machines_cost_recovery","buildings_cost_re
 depdata <- subset(depdata, select = -c(weighted_machines, weighted_buildings, weighted_intangibles))
 
 
-#Import and match country names with ISO-3 codes#
+#Import and match country names by ISO-3 codes#
 
 #Read in country name file
 country_names <- read.csv("source-data/country_codes.csv")
@@ -333,7 +333,6 @@ colnames(depdata)[colnames(depdata)=="country"] <- "iso_3"
 
 #Add country names to depdata
 depdata <- merge(country_names, depdata, by='iso_3')
-
 
 
 #Adding GDP to the dataset###
@@ -357,7 +356,6 @@ depdata$country[depdata$country == "United Kingdom of Great Britain and Northern
 depdata$country[depdata$country == "Republic of Korea"] <- "Korea"
 depdata$country[depdata$country == "United States of America"] <- "United States"
 
-
 #Change format of GDP data from wide to long
 gdp_long <- (melt(gdp, id=c("country")))
 colnames(gdp_long)[colnames(gdp_long)=="variable"] <- "year"
@@ -372,7 +370,7 @@ write.csv(depdata, "final-data/npv_all_years.csv")
 
 #Create output tables and data for the graphs included in the report#
 
-#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2019" (Table 1)
+#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2019"
 
 #Limit to OECD countries and 2019
 depdata_oecd_2019 <- subset(depdata, year==2019)
@@ -389,10 +387,12 @@ depdata_2019_ranking$waverage_rank <- rank(-depdata_2019_ranking$`waverage`, tie
 
 depdata_2019_ranking <- subset(depdata_2019_ranking, select = -c(year, iso_3, average, gdp))
 
+#Order columns and sort data
 depdata_2019_ranking <- depdata_2019_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
 
 depdata_2019_ranking <- depdata_2019_ranking[order(-depdata_2019_ranking$waverage, depdata_2019_ranking$country),]
 
+#Round digits
 depdata_2019_ranking$waverage <- round(depdata_2019_ranking$waverage, digits=3)
 depdata_2019_ranking$buildings_cost_recovery <- round(depdata_2019_ranking$buildings_cost_recovery, digits=3)
 depdata_2019_ranking$machines_cost_recovery <- round(depdata_2019_ranking$machines_cost_recovery, digits=3)
@@ -412,18 +412,21 @@ colnames(depdata_2019_ranking)[colnames(depdata_2019_ranking)=="intangibles_rank
 write.csv(depdata_2019_ranking, "final-outputs/npv_ranks_2019.csv")
 
 
-#Data for graph: "Net Present Value of Capital Allowances, OECD, 2000-2019" (Figure 1) (data going back to 1980 is available but )
+#Data for graph: "Net Present Value of Capital Allowances, OECD, 2000-2019"
 
 #Limit to OECD countries
 depdata_oecd_all_years <- subset(depdata, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
+#Calculate timeseries averages
 depdata_weighted <- ddply(depdata_oecd_all_years, .(year),summarize, weighted_average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE),n = length(waverage[is.na(waverage) == FALSE]))
+
+#Limit to years starting in 2000 (data for all OECD countries is available starting in 2000)
 depdata_weighted <- depdata_weighted[depdata_weighted$year>1999,]
 
 write.csv(depdata_weighted, "final-outputs/npv_weighted_timeseries.csv")
 
 
-#Data for graph: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2019" (Figure 2)
+#Data for graph: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2019"
 
 #Read in dataset
 dataset_list <- get_datasets()
@@ -463,8 +466,9 @@ oecd_rates_weighted <- ddply(oecd_rates, .(year),summarize, weighted_average = w
 write.csv(oecd_rates_weighted, "final-outputs/cit_rates_timeseries.csv")
 
 
-
 #Data for map: "Net Present Value of Capital Allowances in Europe"
+
+#Keep European countries and the year 2019
 depdata_europe_2019 <- subset(depdata, year==2019)
 depdata_europe_2019 <- subset(depdata_europe_2019, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
 
@@ -479,6 +483,7 @@ depdata_europe_2019$rank <- rank(-depdata_europe_2019$`waverage`,ties.method = "
 
 write.csv(depdata_europe_2019, "final-outputs/npv_europe.csv")
 
+
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
 
 #Limit to EU countries and 2019
@@ -491,7 +496,7 @@ depdata_eu27_2019 <- subset(depdata_eu27_2019, select = c(iso_3, country, year, 
 #Sort data
 depdata_eu27_2019 <- depdata_eu27_2019[order(-depdata_eu27_2019$waverage, depdata_eu27_2019$country),]
 
-#Add CCTB data
+#Add weighted average of capital allowances under CCTB
 cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2019), waverage = c(0.679178398))
 depdata_eu27_2019 <- rbind(depdata_eu27_2019, cctb)
 
@@ -500,6 +505,7 @@ write.csv(depdata_eu27_2019, "final-outputs/eu_cctb.csv")
 
 #Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2019"
 
+#Calculate averages by asset type
 average_assets <- ddply(depdata_oecd_2019, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
 write.csv(average_assets, "final-outputs/asset_averages.csv")
