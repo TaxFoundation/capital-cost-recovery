@@ -413,7 +413,7 @@ colnames(data_2019_ranking)[colnames(data_2019_ranking)=="intangibles_rank"] <- 
 write.csv(data_2019_ranking, "final-outputs/npv_ranks_2019.csv")
 
 
-#Data for graph: "Net Present Value of Capital Allowances, OECD, 2000-2019"
+#Data for graph: "Net Present Value of Capital Allowances in the OECD, 2000-2019"
 
 #Limit to OECD countries
 data_oecd_all_years <- subset(data, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
@@ -498,7 +498,7 @@ data_eu27_2019 <- subset(data_eu27_2019, select = c(iso_3, country, year, wavera
 data_eu27_2019 <- data_eu27_2019[order(-data_eu27_2019$waverage, data_eu27_2019$country),]
 
 #Add weighted average of capital allowances under CCTB
-cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2019), waverage = c(0.679178398))
+cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2019), waverage = c(0.673))
 data_eu27_2019 <- rbind(data_eu27_2019, cctb)
 
 write.csv(data_eu27_2019, "final-outputs/eu_cctb.csv")
