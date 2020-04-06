@@ -1,46 +1,33 @@
 # Source Documentation for _Capital Cost Recovery across the OECD_
 
-[UPDATE]
 
 ## **CAPITAL COST ALLOWANCES**
 
-## General Sources
-### *Apply to all countries unless otherwise noted.*
+### Depreciation schedule data for the years 2017 to 2019:
 
-### For capital allowances from 2017 to 2019:
-
-* EU EATR
-
-* EY, "Worldwide Corporate Tax Guide," https://www.ey.com/Publication/vwLUAssets/ey-worldwide-corporate-tax-guide-2019/$FILE/ey-worldwide-corporate-tax-guide-2019.pdf.
+* Christoph Spengel, Frank Schmidt, Jost Heckmeyer, and Katharina Nicolay, “Effective Tax Levels Using the Devereux/Griffith Methodology,” European Commission, November 2019, https://ec.europa.eu/taxation_customs/sites/taxation/files/final_report_2019_effective_tax_levels_revised_en.pdf.
 
 * EY, "Worldwide Capital and Fixed Assets Guide," https://www.ey.com/Publication/vwLUAssets/ey-2019-worldwide-capital-fixed-assets-guide/$FILE/ey-2019-worldwide-capital-fixed-assets-guide.pdf.
 
-* PKF, "
+* EY, "Worldwide Corporate Tax Guide," https://www.ey.com/Publication/vwLUAssets/ey-worldwide-corporate-tax-guide-2019/$FILE/ey-worldwide-corporate-tax-guide-2019.pdf.
 
+* PwC, "Worldwide Tax Summaries," https://taxsummaries.pwc.com/australia/corporate/deductions.
 
+* PKF, "International Worldwide Tax Guide 2019-20," July 2019, https://www.pkf.com/publications/tax-guides/pkf-international-worldwide-tax-guide-2019-20/.
 
-* (Deloitte, ")
+### Depreciation schedule data for the years 1983 to 2016:
 
-* PwC, "Worldwide Tax Summaries," XX
+* Oxford University Centre for Business Taxation, "CBT Tax Database," 2017. This database was created in 2006 as a multi-country database and developed over the years by various Research Fellows at the Oxford University Centre for Business Taxation, and earlier at the Institute for Fiscal Studies. 
+At this point, CBT has not updated the dataset since 2017 and it is no longer available on their website. The Tax Foundation has built on and been updating the capital allowances and inventory valuation parts of it since 2017 on an annual basis, using it for this report and also for a section of the _International Tax Competitiveness Index_. A description of the dataset--called Oxford_CBT_Tax_Database_Data_Description.md--can be found in this GitHub depository.
 
-### For capital allowances from 1983 to 2016:
-
-* CBT Oxford, "data_rates_1980-2018," GitHub, https://github.com/TaxFoundation/worldwide-corporate-tax-rates. Tax Foundation has built this dataset in stages since 2015. These historic rates come from multiple sources: PwC, “Worldwide Tax Summaries – Corporate Taxes,” 2010-2018; KPMG, “Corporate Tax Rate Survey,” 1998- 2003; KPMG, “Corporate tax rates table,” 2003-2018; EY, “Worldwide Corporate Tax Guide,” 2004-2018; OECD, “Historical Table II.1 – Statutory corporate income tax rate,” 1999, http://www.oecd.org/tax/tax-policy/tax-database.htm#C_CorporateCaptial; the University of Michigan - Ross School of Business, “World Tax Database,” https://www.bus.umich.edu/otpr/otpr/default.asp; and numerous government websites.
-
-
-## Country-specific details
-
-* **AUS - Australia:** Depreciation of most capital allowances, such as **machinery**, is based on the effective life of a unit or plant. However, the taxpayers may reasonably self-determine the effective life of a unit or plant or may choose the effective life contained in a published determination of the Commissioner of Taxation, see Australian Taxation Office, "Taxation Ruling," https://www.ato.gov.au/law/view/document?DocID=TXR%2FTR20195%2FNAT%2FATO%2F00001. Taxpayers may choose the straight-line method or the double diminishing value method (200% of the
-straight-line rate) for calculating the tax-deductible depreciation for all depreciating assets except intangible assets (there is also a pre-termined rate for buildings), see EY, "Worldwide Corporate Tax Guide," https://www.ey.com/Publication/vwLUAssets/ey-worldwide-corporate-tax-guide-2019/$FILE/ey-worldwide-corporate-tax-guide-2019.pdf. For the dataset, we assume a 7-year double diminishing value method for machinery.
-
-
-* **
-
+____________________________________________________
+## **COMBINED CORPORATE INCOME TAX RATE**
+* OECD, "OECD Tax Database, Table II.1 Statutory corporate income tax rate," updated April 2019, https://stats.oecd.org/index.aspx?DataSetCode=Table_II1.
 
 ____________________________________________________
 ## **GROSS DOMESTIC PRODUCT (GDP)**
 
-* U.S. Department of Agriculture, “International Macroeconomics Data Set,” December 2018, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/.
+* U.S. Department of Agriculture, “International Macroeconomics Data Set,” January 2020, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/.
 
 
 ____________________________________________________
