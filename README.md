@@ -74,10 +74,10 @@ Location of **output tables** that are included in the publication or needed to 
 
 - `cit_rates_timeseries.csv` Table showing the average and weighted average (weighted by GDP) combined corporate income tax rate in the OECD for each year from 2000 to 2019.
 
-- `eu_cctb` Table showing the weighted net present value of capital allowances in EU countries for the year 2019. Also includes the net present value of capital allowances under the EU's Common Corporate Tax Base (CCTB) proposal.
+- `eu_cctb.csv` Table showing the weighted net present value of capital allowances in EU countries for the year 2019. Also includes the net present value of capital allowances under the EU's Common Corporate Tax Base (CCTB) proposal.
 
-- `npv_europe` Table showing the weighted net present value of capital allowances in European countries for the year 2019. Also includes a column that ranks the countries by the net present value of their capital allowances.
+- `npv_europe.csv` Table showing the weighted net present value of capital allowances in European countries for the year 2019. Also includes a column that ranks the countries by the net present value of their capital allowances.
 
-- `npv_ranks_2019` Table showing the net present value of capital allowances by OECD country and asset type for the year 2019. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking for each asset type and the average.
+- `npv_ranks_2019.csv` Table showing the net present value of capital allowances by OECD country and asset type for the year 2019. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking for each asset type and the average.
 
-- `npv_weighted_timeseries` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2019.
+- `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2019.
