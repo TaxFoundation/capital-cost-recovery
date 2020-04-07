@@ -9,7 +9,7 @@ The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https
 ### Scope
 The source dataset compiled for this publication includes the 2019 depreciation schedules of all 36 OECD countries for the following three assets: industrial buildings, machinery, and intangibles. 
 
-In addition, the dataset includes historic depreciation schedules for the time period 1980 to 2018. However, years prior to 2000 do not include data for all OECD countries. The dataset also includes some historic depreciation schedule data for non-OECD countries for the years 1979 to 2017.
+In addition, the dataset includes historic depreciation schedules for the time period 1979 to 2018. However, years prior to 2000 do not include data for all OECD countries (e.g., the year 1979 only includes data for Canada, Finland, and Germany). The dataset also includes some historic depreciation schedule data for non-OECD countries.
 
 It also includes the best available inventory valuation methods in OECD countries up until 2019, statutory corporate tax rates, effective average tax rates (EATRs), and effective marginal tax rates (EMTRs) for certain years and countries. However, these variables are not used in this report.
 
@@ -52,7 +52,7 @@ The description of the dataset explains the variables it contains and gives some
 
 Location of **input** files to .R code file including:
 
-- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of all OECD-countries and some non-OECD countries for the years 2000-2019 (and for some countries for the years 1980-1999 as well).
+- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of all OECD-countries and some non-OECD countries for the years 2000-2019 (and for some countries for the years 1979-1999 as well).
 
 - `country_codes.csv` Dataset that includes all 249 sovereign states and dependent territories that have been assigned a country code by the International Organization for Standardization (ISO). Includes official country names in various languages, ISO country codes, continents, and further geographical information.
 
