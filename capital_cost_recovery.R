@@ -66,7 +66,7 @@ data <- data[which(data$country=="AUS"
 
 
 #Drop columns that are not needed
-data <- subset(data, select = -c(inventoryval, total, statutory_corptax, EATR, EMTR, ace))
+data <- subset(data, select = -c(inventoryval, total, statutory_corptax, EATR, EMTR))
 
 
 #Define functions for present discounted value calculations#

@@ -5,13 +5,13 @@
 
 ### Depreciation schedule data for the years 2017 to 2019:
 
-* Christoph Spengel, Frank Schmidt, Jost Heckmeyer, and Katharina Nicolay, “Effective Tax Levels Using the Devereux/Griffith Methodology,” European Commission, November 2019, https://ec.europa.eu/taxation_customs/sites/taxation/files/final_report_2019_effective_tax_levels_revised_en.pdf.
+* Christoph Spengel, Frank Schmidt, Jost Heckemeyer, and Katharina Nicolay, “Effective Tax Levels Using the Devereux/Griffith Methodology,” European Commission, November 2019, https://ec.europa.eu/taxation_customs/sites/taxation/files/final_report_2019_effective_tax_levels_revised_en.pdf.
 
 * EY, "Worldwide Capital and Fixed Assets Guide," https://www.ey.com/Publication/vwLUAssets/ey-2019-worldwide-capital-fixed-assets-guide/$FILE/ey-2019-worldwide-capital-fixed-assets-guide.pdf.
 
 * EY, "Worldwide Corporate Tax Guide," https://www.ey.com/Publication/vwLUAssets/ey-worldwide-corporate-tax-guide-2019/$FILE/ey-worldwide-corporate-tax-guide-2019.pdf.
 
-* PwC, "Worldwide Tax Summaries," https://taxsummaries.pwc.com/australia/corporate/deductions.
+* PwC, "Worldwide Tax Summaries," https://taxsummaries.pwc.com/.
 
 * PKF, "International Worldwide Tax Guide 2019-20," July 2019, https://www.pkf.com/publications/tax-guides/pkf-international-worldwide-tax-guide-2019-20/.
 
@@ -27,7 +27,7 @@ ____________________________________________________
 ____________________________________________________
 ## **GROSS DOMESTIC PRODUCT (GDP)**
 
-* U.S. Department of Agriculture, “International Macroeconomics Data Set,” January 2020, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/.
+* U.S. Department of Agriculture, "International Macroeconomics Data Set," January 2020, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/.
 
 
 ____________________________________________________
