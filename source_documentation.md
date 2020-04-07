@@ -18,7 +18,7 @@
 ### Depreciation schedule data for the years 1983 to 2016:
 
 * Oxford University Centre for Business Taxation, "CBT Tax Database," 2017. This database was created in 2006 as a multi-country database and developed over the years by various Research Fellows at the Oxford University Centre for Business Taxation, and earlier at the Institute for Fiscal Studies. 
-At this point, CBT has not updated the dataset since 2017 and it is no longer available on their website. The Tax Foundation has built on and been updating the capital allowances and inventory valuation parts of it since 2017 on an annual basis, using it for this report and also for a section of the _International Tax Competitiveness Index_. A description of the dataset--called Oxford_CBT_Tax_Database_Data_Description.md--can be found in this GitHub depository.
+At this point, CBT has not updated the dataset since 2017 and it is no longer available on their website. The Tax Foundation has built on and been updating the capital allowances and inventory valuation parts of it since 2017 on an annual basis, using it for this report and for a section of our _International Tax Competitiveness Index_. A description of the dataset—called Oxford_CBT_Tax_Database_Data_Description.md—can be found in this GitHub depository.
 
 ____________________________________________________
 ## **COMBINED CORPORATE INCOME TAX RATE**

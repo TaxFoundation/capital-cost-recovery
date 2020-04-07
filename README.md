@@ -18,15 +18,15 @@ It also includes the best available inventory valuation methods in OECD countrie
 
 There are various depreciation methods. The dataset captures them as follows:
 
-- **SL - Straight-Line Method**: An asset is depreciated by an equal allowance (in nomianl terms) each year. E.g., an annual allowance of 10% over 10 years.
+- **SL - Straight-Line Method:** An asset is depreciated by an equal allowance (in nominal terms) each year; e.g., an annual allowance of 10% over 10 years.
 
-* **DB - Declining-Balance Method**: An asset is depreciated based on its _remaining_ book value. E.g., in the case of a $100 investment, in the first year the allowance is 25% of $100, in the second year it's 25% of ($100-$25), and so forth.
+* **DB - Declining-Balance Method:** An asset is depreciated based on its _remaining_ book value; e.g., in the case of a $100 investment, in the first year the allowance is 25% of $100, in the second year it's 25% of ($100-$25), and so forth.
 
-* **DB or SL - Declining-Balance Method with a Switch to the Straight-Line Method**: An asset is depreciated with the declining-balance method for a (number of) year(s) and then the depreciation method switches to straight-line. In some countries businesses switch from DB to SL when depreciating an asset as soon as the allowance is higher under SL than it would be under DB.
+* **DB or SL - Declining-Balance Method with a Switch to the Straight-Line Method:** An asset is depreciated with the declining-balance method for a (number of) year(s) and then the depreciation method switches to straight-line. In some countries businesses switch from DB to SL when depreciating an asset as soon as the allowance is higher under SL than it would be under DB.
 
-* **SL2 - Straight-Line Method with Changing Rates**: An asset is depreciated under the straight-line method. However, after a (number of) year(s) the depreciation rate changes. E.g., an asset is depreciated at 20% for 3 years and then at 10% for four years. In our dataset, countries that switch their depreciation rates twice are treated as if they switched them only once (see Italy).
+* **SL2 - Straight-Line Method with Changing Rates:** An asset is depreciated under the straight-line method. However, after a (number of) year(s) the depreciation rate changes; e.g., an asset is depreciated at 20% for three years and then at 10% for four years. In our dataset, countries that switch their depreciation rates twice are treated as if they switched them only once (see Italy).
 
-* **initialDB - Declining-Balance Method with an Initial Allowance**: As asset is depreciated under the declining-balance method but there is an additional allowance in the first year.
+* **initialDB - Declining-Balance Method with an Initial Allowance:** An asset is depreciated under the declining-balance method but there is an additional allowance in the first year.
 
 
 We assume that businesses will choose the tax-optimizing depreciation method and list that method in the dataset while ignoring less optimal alternatives businesses might have.
@@ -52,7 +52,7 @@ The description of the dataset explains the variables it contains and gives some
 
 Location of **input** files to .R code file including:
 
-- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of all OECD-countries and some non-OECD countries for the years 2000-2019 (and for some countries for the years 1979-1999 as well).
+- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of all OECD countries and some non-OECD countries for the years 2000-2019 (and for some countries for the years 1979-1999 as well).
 
 - `country_codes.csv` Dataset that includes all 249 sovereign states and dependent territories that have been assigned a country code by the International Organization for Standardization (ISO). Includes official country names in various languages, ISO country codes, continents, and further geographical information.
 
