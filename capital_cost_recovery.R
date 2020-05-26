@@ -425,7 +425,9 @@ data_weighted <- ddply(data_oecd_all_years, .(year),summarize, weighted_average 
 #Limit to years starting in 2000 (data for all OECD countries is available starting in 2000)
 data_weighted <- data_weighted[data_weighted$year>1999,]
 
-write.csv(data_weighted, "final-outputs/npv_weighted_timeseries.csv")
+colnames(data_weighted)[colnames(data_weighted)=="n"] <- "country_count"
+
+write.csv(data_weighted, "final-outputs/npv_weighted_timeseries.csv", row.names = FALSE)
 
 
 #Data for graph: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2019"
