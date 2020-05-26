@@ -324,10 +324,11 @@ data <- subset(data, select = -c(weighted_machines, weighted_buildings, weighted
 country_names <- read.csv("source-data/country_codes.csv")
 
 #Keep and rename selected columns
-country_names <- subset(country_names, select = c(official_name_en, ISO3166.1.Alpha.3))
+country_names <- subset(country_names, select = c(official_name_en, ISO3166.1.Alpha.3, ISO3166.1.Alpha.2))
 
 colnames(country_names)[colnames(country_names)=="official_name_en"] <- "country"
 colnames(country_names)[colnames(country_names)=="ISO3166.1.Alpha.3"] <- "iso_3"
+colnames(country_names)[colnames(country_names)=="ISO3166.1.Alpha.2"] <- "iso_2"
 
 #Rename column "country" in data
 colnames(data)[colnames(data)=="country"] <- "iso_3"
@@ -366,7 +367,7 @@ colnames(gdp_long)[colnames(gdp_long)=="value"] <- "gdp"
 data <- merge(data, gdp_long, by =c("country", "year"), all=FALSE)
 
 #Write data file#
-write.csv(data, "final-data/npv_all_years.csv")
+write.csv(data, "final-data/npv_all_years.csv", row.names = FALSE)
 
 
 #Create output tables and data for the graphs included in the report#####
