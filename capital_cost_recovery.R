@@ -28,6 +28,7 @@ data <- data[which(data$country=="AUS"
                    | data$country=="BGR"
                    | data$country=="CAN" 
                    | data$country=="CHL"
+                   | data$country=="COL"
                    | data$country=="HRV" 
                    | data$country=="CYP"
                    | data$country=="CZE" 
@@ -301,6 +302,7 @@ data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2016,] <-
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2017,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2017,] * 0.50) + 0.50
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2018,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2018,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] * 0.00) + 1.00
 
 #Only keep columns with the calculated net present values
 data <- subset(data, select = c(country, year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
@@ -340,12 +342,12 @@ data <- merge(country_names, data, by='iso_3')
 #Adding GDP to the dataset#######
 
 #Reading in and merging GDP datasets
-gdp_historical <- read_excel("source-data/gdp_historical.xlsx", range = "A12:AN230")
-gdp_projected <- read_excel("source-data/gdp_projected.xlsx", range = "A11:J232")
+gdp_historical <- read_excel("source-data/gdp_historical.xlsx", range = "A14:V234")
+gdp_projected <- read_excel("source-data/gdp_projected.xlsx", range = "A14:J234")
 
-gdp_historical$Country[gdp_historical$Country == "UK"] <- "United Kingdom"
+#gdp_historical$Country[gdp_historical$Country == "UK"] <- "United Kingdom"
 
-gdp_projected <- subset(gdp_projected, select = c(Country, `2019`))
+gdp_projected <- subset(gdp_projected, select = c(Country, `2020`))
 gdp <- merge(gdp_historical,gdp_projected, by="Country")
 colnames(gdp)[colnames(gdp)=="Country"] <- "country"
 
@@ -364,7 +366,53 @@ colnames(gdp_long)[colnames(gdp_long)=="variable"] <- "year"
 colnames(gdp_long)[colnames(gdp_long)=="value"] <- "gdp"
 
 #Merge net present value data with GDP data
-data <- merge(data, gdp_long, by =c("country", "year"), all=FALSE)
+data <- merge(data, gdp_long, by =c("country", "year"), all=TRUE)
+
+#Drop non-OECD/non-EU countries
+#Limit countries to OECD and EU countries
+data <- data[which(data$iso_3=="AUS" 
+                   | data$iso_3=="AUT"
+                   | data$iso_3=="BEL"
+                   | data$iso_3=="BGR"
+                   | data$iso_3=="CAN" 
+                   | data$iso_3=="CHL"
+                   | data$iso_3=="COL"
+                   | data$iso_3=="HRV" 
+                   | data$iso_3=="CYP"
+                   | data$iso_3=="CZE" 
+                   | data$iso_3=="DNK" 
+                   | data$iso_3=="EST" 
+                   | data$iso_3=="FIN" 
+                   | data$iso_3=="FRA"
+                   | data$iso_3=="DEU"
+                   | data$iso_3=="GRC"
+                   | data$iso_3=="HUN"
+                   | data$iso_3=="ISL"
+                   | data$iso_3=="IRL"
+                   | data$iso_3=="ISR"
+                   | data$iso_3=="ITA"
+                   | data$iso_3=="JPN"
+                   | data$iso_3=="KOR"
+                   | data$iso_3=="LVA"
+                   | data$iso_3=="LTU"
+                   | data$iso_3=="LUX"
+                   | data$iso_3=="MLT" 
+                   | data$iso_3=="MEX"
+                   | data$iso_3=="NLD"
+                   | data$iso_3=="NZL"
+                   | data$iso_3=="NOR"
+                   | data$iso_3=="POL"
+                   | data$iso_3=="PRT"
+                   | data$iso_3=="ROU" 
+                   | data$iso_3=="SVK"
+                   | data$iso_3=="SVN"
+                   | data$iso_3=="ESP"
+                   | data$iso_3=="SWE"
+                   | data$iso_3=="CHE"
+                   | data$iso_3=="TUR"
+                   | data$iso_3=="GBR"
+                   | data$iso_3=="USA"),]
+
 
 #Write data file#
 write.csv(data, "final-data/npv_all_years.csv", row.names = FALSE)
@@ -372,18 +420,18 @@ write.csv(data, "final-data/npv_all_years.csv", row.names = FALSE)
 
 #Create output tables and data for the graphs included in the report#####
 
-#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2019"
+#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2020"
 
-#Limit to OECD countries and 2019
-data_oecd_2019 <- subset(data, year==2019)
-data_oecd_2019 <- subset(data_oecd_2019, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
+#Limit to OECD countries and 2020
+data_oecd_2020 <- subset(data, year==2020)
+data_oecd_2020 <- subset(data_oecd_2020, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
 #Create rankings
-data_2019_ranking <- data_oecd_2019
+data_2020_ranking <- data_oecd_2020
 
-data_2019_ranking$buildings_rank <- rank(-data_2019_ranking$`buildings_cost_recovery`,ties.method = "min")
-data_2019_ranking$machines_rank <- rank(-data_2019_ranking$`machines_cost_recovery`,ties.method = "min")
-data_2019_ranking$intangibles_rank <- rank(-data_2019_ranking$`intangibles_cost_recovery`,ties.method = "min")
+data_2020_ranking$buildings_rank <- rank(-data_2020_ranking$`buildings_cost_recovery`,ties.method = "min")
+data_2020_ranking$machines_rank <- rank(-data_2020_ranking$`machines_cost_recovery`,ties.method = "min")
+data_2020_ranking$intangibles_rank <- rank(-data_2020_ranking$`intangibles_cost_recovery`,ties.method = "min")
 
 data_2019_ranking$waverage_rank <- rank(-data_2019_ranking$`waverage`, ties.method = "min")
 
