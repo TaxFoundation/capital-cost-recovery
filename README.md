@@ -1,17 +1,17 @@
 # Capital Cost Recovery across the OECD
 
-The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https://taxfoundation.org/publications/capital-cost-recovery-across-the-oecd/) shows how capital allowances compare across OECD countries and how they have developed since 2000. The dataset we compiled for the years 1980 to 2019 is made available as a resource for research.
+The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https://taxfoundation.org/publications/capital-cost-recovery-across-the-oecd/) shows how capital allowances compare across OECD countries and how they have developed since 2000. The dataset we compiled for the years 1979 to 2020 is made available as a resource for research.
 
 
 
 ## The Dataset
 
 ### Scope
-The source dataset compiled for this publication includes the 2019 depreciation schedules of all 36 OECD countries for the following three assets: industrial buildings, machinery, and intangibles. 
+The source dataset compiled for this publication includes the 2020 depreciation schedules of all 37 OECD countries for the following three assets: industrial buildings, machinery, and intangibles.
 
-In addition, the dataset includes historic depreciation schedules for the time period 1979 to 2018. However, years prior to 2000 do not include data for all OECD countries (e.g., the year 1979 only includes data for Canada, Finland, and Germany). The dataset also includes some historic depreciation schedule data for non-OECD countries.
+In addition, the dataset includes historic depreciation schedules for the time period 1979 to 2019. However, years prior to 2000 do not include data for all OECD countries (e.g., the year 1979 only includes data for Canada, Finland, and Germany). The dataset also includes some historic depreciation schedules data for non-OECD countries.
 
-It also includes the best available inventory valuation methods in OECD countries up until 2019, statutory corporate tax rates, effective average tax rates (EATRs), and effective marginal tax rates (EMTRs) for certain years and countries. However, these variables are not used in this report.
+It also includes the best available inventory valuation methods in OECD countries up until 2020, statutory corporate tax rates, effective average tax rates (EATRs), and effective marginal tax rates (EMTRs) for certain years and countries. However, these variables are not used in this report.
 
 
 ### Depreciation Methods
@@ -29,7 +29,7 @@ There are various depreciation methods. The dataset captures them as follows:
 * **initialDB - Declining-Balance Method with an Initial Allowance:** An asset is depreciated under the declining-balance method but there is an additional allowance in the first year.
 
 
-We assume that businesses will choose the tax-optimizing depreciation method and list that method in the dataset while ignoring less optimal alternatives businesses might have.
+We assume that businesses will choose the tax-optimizing depreciation method (higher allowances in earlier years) and list that method in the dataset while ignoring less optimal alternatives businesses might have.
 
 The document *Oxford_CBT_Tax_Database_Data_Description.md* provides more details on how this dataset is structured and what the variables are.
 
@@ -52,13 +52,13 @@ The description of the dataset explains the variables it contains and gives some
 
 Location of **input** files to .R code file including:
 
-- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of all OECD countries and some non-OECD countries for the years 2000-2019 (and for some countries for the years 1979-1999 as well).
+- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of OECD countries and some non-OECD countries for the years 2000-2020 (and for some countries for the years 1979-1999 as well; the new OECD country Colombia is missing for the years 2000-2012 due to data unavailability).
 
 - `country_codes.csv` Dataset that includes all 249 sovereign states and dependent territories that have been assigned a country code by the International Organization for Standardization (ISO). Includes official country names in various languages, ISO country codes, continents, and further geographical information.
 
-- `gdp_historical.xlsx` U.S. Department of Agriculture's dataset of historical real Gross Domestic Product (GDP) and growth rates of GDP for 176 countries and various regions (in billions of 2010 dollars) for the years 1980 to 2018.
+- `gdp_historical.xlsx` U.S. Department of Agriculture's dataset of historical real Gross Domestic Product (GDP) and growth rates of GDP for 176 countries and various regions (in billions of 2015 dollars) for the years 1999 to 2019.
 
-- `gdp_projected.xlsx` U.S. Department of Agriculture's dataset of projected real Gross Domestic Product (GDP) and growth rates of GDP for 176 countries and various regions (in billions of 2010 dollars) for the years 2011 to 2031.
+- `gdp_projected.xlsx` U.S. Department of Agriculture's dataset of projected real Gross Domestic Product (GDP) and growth rates of GDP for 176 countries and various regions (in billions of 2015 dollars) for the years 2012 to 2032.
 
 
 ### /final-data
@@ -70,14 +70,14 @@ Location of **final data** files of .R code file including
 ### /final-outputs
 Location of **output tables** that are included in the publication or needed to produce the charts that are part of the publication.
 
-- `asset_averages.csv` Table showing the average net present value of capital allowances in the OECD by asset type for the year 2019.
+- `asset_averages.csv` Table showing the average net present value of capital allowances in the OECD by asset type for the year 2020.
 
-- `cit_rates_timeseries.csv` Table showing the average and weighted average (weighted by GDP) combined corporate income tax rate in the OECD for each year from 2000 to 2019.
+- `cit_rates_timeseries.csv` Table showing the average and weighted average (weighted by GDP) combined corporate income tax rate in the OECD for each year from 2000 to 2020.
 
-- `eu_cctb.csv` Table showing the average net present value of capital allowances in EU countries for the year 2019. Also includes the average net present value of capital allowances under the EU's Common Corporate Tax Base (CCTB) proposal.
+- `eu_cctb.csv` Table showing the average net present value of capital allowances in EU countries for the year 2020. Also includes the average net present value of capital allowances under the EU's Common Corporate Tax Base (CCTB) proposal.
 
-- `npv_europe.csv` Table showing the average net present value of capital allowances in European countries for the year 2019. Also includes a column that ranks the countries by the net present value of their capital allowances.
+- `npv_europe.csv` Table showing the average net present value of capital allowances in European countries for the year 2020. Also includes a column that ranks the countries by the net present value of their capital allowances.
 
-- `npv_ranks_2019.csv` Table showing the net present value of capital allowances by OECD country and asset type for the year 2019. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking by each asset type and by the average.
+- `npv_ranks_2020.csv` Table showing the net present value of capital allowances by OECD country and asset type for the year 2020. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking by each asset type and by the weighted average.
 
-- `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2019.
+- `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2020.
