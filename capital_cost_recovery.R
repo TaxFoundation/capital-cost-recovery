@@ -308,6 +308,9 @@ data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2018,] <-
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] * 0.00) + 1.00
 
+#Adjust UK to add 130% super-deduction
+data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2020,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2020,] * 0.00) + 1.30
+
 #Only keep columns with the calculated net present values
 data <- subset(data, select = c(country, year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
 
