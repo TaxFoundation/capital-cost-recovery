@@ -81,3 +81,11 @@ Location of **output tables** that are included in the publication or needed to 
 - `npv_ranks_2020.csv` Table showing the net present value of capital allowances by OECD country and asset type for the year 2020. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking by each asset type and by the weighted average.
 
 - `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2020.
+
+
+## Contact Information
+This repository is maintained by Daniel Bunn at Tax Foundation (dbunn@taxfoundation.org).
+
+
+## Suggested Citation
+Please cite the source of your analysis as "Tax Foundation, "Capital Cost Recovery across the OECD," author's calculations." If you would like to link to the GitHub repository, please use https://github.com/PSLmodels/capital-cost-recovery/tree/master. If you would like to link to the associated Tax Foundation publication, please use https://taxfoundation.org/publications/capital-cost-recovery-across-the-oecd/. 
