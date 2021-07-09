@@ -19,7 +19,7 @@ More details on cloning a repository can be found here: https://docs.github.com/
 ### Installing R
 If you haven't already done so, download RStudio here: https://www.rstudio.com/products/rstudio/.
 
-All necessary functions to run capital-cost-recovery can be called from capital-cost-recovery/capital_cost_recovery.R.
+All necessary functions to run capital-cost-recovery can be called from capital-cost-recovery/capital_cost_recovery.R. See below for an explanation of the source data and the folders and files in the repository.
 
 
 ## The Dataset
