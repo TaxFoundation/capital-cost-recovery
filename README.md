@@ -5,6 +5,23 @@ The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https
 ## Latest Release
 The current version of this project is 1.1.0 (2021-03-31).
 
+## Installation Directions
+You can analyze the data on your personal computer by using R.
+
+### Cloning the GitHub repository
+To install capital-cost-recovery, run the following in the folder you wish to store the files:
+
+git clone https://github.com/TaxFoundation/capital-cost-recovery
+cd capital-cost-recovery
+
+More details on cloning a repository can be found here: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository.
+
+### Installing R
+If you haven't already done so, download RStudio here: https://www.rstudio.com/products/rstudio/.
+
+All necessary functions to run capital-cost-recovery can be called from capital-cost-recovery/capital_cost_recovery.R.
+
+
 ## The Dataset
 
 ### Scope
