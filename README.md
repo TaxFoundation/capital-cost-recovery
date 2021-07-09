@@ -11,13 +11,14 @@ You can analyze the data on your personal computer by using R.
 ### Cloning the GitHub repository
 To install capital-cost-recovery, run the following in the folder you wish to store the files:
 
-git clone https://github.com/TaxFoundation/capital-cost-recovery
-cd capital-cost-recovery
+```git clone https://github.com/TaxFoundation/capital-cost-recovery```
 
-More details on cloning a repository can be found here: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository.
+```cd capital-cost-recovery```
+
+More details on cloning a repository can be found [here](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository).
 
 ### Installing R
-If you haven't already done so, download RStudio here: https://www.rstudio.com/products/rstudio/.
+If you haven't already done so, download and install [RStudio](https://www.rstudio.com/products/rstudio/).
 
 All necessary functions to run capital-cost-recovery can be called from capital-cost-recovery/capital_cost_recovery.R. See below for an explanation of the source data and the folders and files in the repository.
 
@@ -102,7 +103,7 @@ Location of **output tables** that are included in the publication or needed to 
 
 
 ## Contact Information
-This repository is maintained by Daniel Bunn at Tax Foundation (dbunn@taxfoundation.org).
+This repository is maintained by [Daniel Bunn](mailto:dbunn@taxfoundation.org) at the [Tax Foundation](https://taxfoundation.org).
 
 
 ## Suggested Citation
