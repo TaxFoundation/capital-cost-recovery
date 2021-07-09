@@ -2,7 +2,8 @@
 
 The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https://taxfoundation.org/publications/capital-cost-recovery-across-the-oecd/) shows how capital allowances compare across OECD countries and how they have developed since 2000. The dataset we compiled for the years 1979 to 2020 is made available as a resource for research.
 
-
+## Latest Release
+The current version of this project is 1.1.0 (2021-03-31).
 
 ## The Dataset
 
