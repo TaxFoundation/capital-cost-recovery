@@ -12,4 +12,6 @@ jobs:
       - name: Install dependencies
         run: Rscript -e "install.packages(c('testthat', 'readxl', 'plyr', 'reshape2', 'OECD', 'here'))"
       - name: Run tests
-        run: Rscript -e "source('tests/run_tests.R')"
+        run: |
+          cd tests
+          Rscript -e "source('run_tests.R')"
