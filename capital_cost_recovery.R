@@ -7,7 +7,9 @@ gc()
 
 
 #Set directory#
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+library("here")
+CURDIR <- here()
 
 #Install packages#
 
@@ -18,23 +20,23 @@ library(OECD)
 
 
 #Read in dataset containing depreciation data####
-data <- read.csv("source-data/cost_recovery_data.csv")
+data <- read.csv(file.path(CURDIR, "source-data", "cost_recovery_data.csv"))
 
 
 #Limit countries to OECD and EU countries
-data <- data[which(data$country=="AUS" 
+data <- data[which(data$country=="AUS"
                    | data$country=="AUT"
                    | data$country=="BEL"
                    | data$country=="BGR"
-                   | data$country=="CAN" 
+                   | data$country=="CAN"
                    | data$country=="CHL"
                    | data$country=="COL"
-                   | data$country=="HRV" 
+                   | data$country=="HRV"
                    | data$country=="CYP"
-                   | data$country=="CZE" 
-                   | data$country=="DNK" 
-                   | data$country=="EST" 
-                   | data$country=="FIN" 
+                   | data$country=="CZE"
+                   | data$country=="DNK"
+                   | data$country=="EST"
+                   | data$country=="FIN"
                    | data$country=="FRA"
                    | data$country=="DEU"
                    | data$country=="GRC"
@@ -48,14 +50,14 @@ data <- data[which(data$country=="AUS"
                    | data$country=="LVA"
                    | data$country=="LTU"
                    | data$country=="LUX"
-                   | data$country=="MLT" 
+                   | data$country=="MLT"
                    | data$country=="MEX"
                    | data$country=="NLD"
                    | data$country=="NZL"
                    | data$country=="NOR"
                    | data$country=="POL"
                    | data$country=="PRT"
-                   | data$country=="ROU" 
+                   | data$country=="ROU"
                    | data$country=="SVK"
                    | data$country=="SVN"
                    | data$country=="ESP"
@@ -327,7 +329,7 @@ data <- subset(data, select = -c(weighted_machines, weighted_buildings, weighted
 #Import and match country names by ISO-3 codes#####
 
 #Read in country name file
-country_names <- read.csv("source-data/country_codes.csv")
+country_names <- read.csv(file.path(CURDIR, "source-data", "country_codes.csv"))
 
 #Keep and rename selected columns
 country_names <- subset(country_names, select = c(official_name_en, ISO3166.1.Alpha.3, ISO3166.1.Alpha.2))
@@ -346,8 +348,8 @@ data <- merge(country_names, data, by='iso_3')
 #Adding GDP to the dataset#######
 
 #Reading in and merging GDP datasets
-gdp_historical <- read_excel("source-data/gdp_historical.xlsx", range = "A14:V234")
-gdp_projected <- read_excel("source-data/gdp_projected.xlsx", range = "A14:J234")
+gdp_historical <- read_excel(file.path(CURDIR, "source-data", "gdp_historical.xlsx"), range = "A14:V234")
+gdp_projected <- read_excel(file.path(CURDIR, "source-data", "gdp_projected.xlsx"), range = "A14:J234")
 
 #gdp_historical$Country[gdp_historical$Country == "UK"] <- "United Kingdom"
 
@@ -374,19 +376,19 @@ data <- merge(data, gdp_long, by =c("country", "year"), all=TRUE)
 
 #Drop non-OECD/non-EU countries
 #Limit countries to OECD and EU countries
-data <- data[which(data$iso_3=="AUS" 
+data <- data[which(data$iso_3=="AUS"
                    | data$iso_3=="AUT"
                    | data$iso_3=="BEL"
                    | data$iso_3=="BGR"
-                   | data$iso_3=="CAN" 
+                   | data$iso_3=="CAN"
                    | data$iso_3=="CHL"
                    | data$iso_3=="COL"
-                   | data$iso_3=="HRV" 
+                   | data$iso_3=="HRV"
                    | data$iso_3=="CYP"
-                   | data$iso_3=="CZE" 
-                   | data$iso_3=="DNK" 
-                   | data$iso_3=="EST" 
-                   | data$iso_3=="FIN" 
+                   | data$iso_3=="CZE"
+                   | data$iso_3=="DNK"
+                   | data$iso_3=="EST"
+                   | data$iso_3=="FIN"
                    | data$iso_3=="FRA"
                    | data$iso_3=="DEU"
                    | data$iso_3=="GRC"
@@ -400,14 +402,14 @@ data <- data[which(data$iso_3=="AUS"
                    | data$iso_3=="LVA"
                    | data$iso_3=="LTU"
                    | data$iso_3=="LUX"
-                   | data$iso_3=="MLT" 
+                   | data$iso_3=="MLT"
                    | data$iso_3=="MEX"
                    | data$iso_3=="NLD"
                    | data$iso_3=="NZL"
                    | data$iso_3=="NOR"
                    | data$iso_3=="POL"
                    | data$iso_3=="PRT"
-                   | data$iso_3=="ROU" 
+                   | data$iso_3=="ROU"
                    | data$iso_3=="SVK"
                    | data$iso_3=="SVN"
                    | data$iso_3=="ESP"
@@ -419,7 +421,7 @@ data <- data[which(data$iso_3=="AUS"
 
 
 #Write data file#
-write.csv(data, "final-data/npv_all_years.csv", row.names = FALSE)
+write.csv(data, file.path(CURDIR, "final-data", "npv_all_years.csv"), row.names = FALSE)
 
 
 #Create output tables and data for the graphs included in the report#####
@@ -463,7 +465,7 @@ colnames(data_2020_ranking)[colnames(data_2020_ranking)=="machines_rank"] <- "Ma
 colnames(data_2020_ranking)[colnames(data_2020_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
 colnames(data_2020_ranking)[colnames(data_2020_ranking)=="intangibles_rank"] <- "Intangibles Rank"
 
-write.csv(data_2020_ranking, "final-outputs/npv_ranks_2020.csv")
+write.csv(data_2020_ranking, file.path(CURDIR, "final-outputs", "npv_ranks_2020.csv"))
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2020"
@@ -479,7 +481,7 @@ data_weighted <- data_weighted[data_weighted$year>1999,]
 
 colnames(data_weighted)[colnames(data_weighted)=="n"] <- "country_count"
 
-write.csv(data_weighted, "final-outputs/npv_weighted_timeseries.csv", row.names = FALSE)
+write.csv(data_weighted, file.path(CURDIR, "final-outputs", "npv_weighted_timeseries.csv"), row.names = FALSE)
 
 
 #Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2020"
@@ -519,7 +521,7 @@ oecd_rates <- merge(oecd_rates, gdp_long, by =c("country", "year"), all=FALSE)
 #Weigh corporate rates by GDP
 oecd_rates_weighted <- ddply(oecd_rates, .(year),summarize, weighted_average = weighted.mean(rate, gdp, na.rm = TRUE), average = mean(rate, na.rm = TRUE),n = length(rate[is.na(rate) == FALSE]))
 
-write.csv(oecd_rates_weighted, "final-outputs/cit_rates_timeseries.csv")
+write.csv(oecd_rates_weighted, file.path(CURDIR, "final-outputs", "cit_rates_timeseries.csv"))
 
 
 #Data for map: "Net Present Value of Capital Allowances in Europe"
@@ -537,7 +539,7 @@ data_europe_2020 <- data_europe_2020[order(-data_europe_2020$waverage, data_euro
 #Add ranking
 data_europe_2020$rank <- rank(-data_europe_2020$`waverage`,ties.method = "min")
 
-write.csv(data_europe_2020, "final-outputs/npv_europe.csv")
+write.csv(data_europe_2020, file.path(CURDIR, "final-outputs", "npv_europe.csv"))
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
@@ -556,7 +558,7 @@ data_eu27_2020 <- data_eu27_2020[order(-data_eu27_2020$waverage, data_eu27_2020$
 cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2020), waverage = c(0.673))
 data_eu27_2020 <- rbind(data_eu27_2020, cctb)
 
-write.csv(data_eu27_2020, "final-outputs/eu_cctb.csv")
+write.csv(data_eu27_2020, file.path(CURDIR, "final-outputs", "eu_cctb.csv"))
 
 
 #Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2020"
@@ -564,4 +566,4 @@ write.csv(data_eu27_2020, "final-outputs/eu_cctb.csv")
 #Calculate averages by asset type
 average_assets <- ddply(data_oecd_2020, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
-write.csv(average_assets, "final-outputs/asset_averages.csv")
+write.csv(average_assets, file.path(CURDIR, "final-outputs", "asset_averages.csv"))
