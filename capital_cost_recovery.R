@@ -7,12 +7,12 @@ library(plyr)
 library(OECD)
 library(here)
 
-#Clear working environment#
-#rm(list=ls())
-#gc()
-
 #Find directory#
 CURDIR <- here::here()
+
+# Ceate directories will write output to in case they don't exist
+dir.create(file.path(CURDIR, "final-data"), showWarnings = FALSE)
+dir.create(file.path(CURDIR, "final-outputs"), showWarnings = FALSE)
 
 #Read in dataset containing depreciation data####
 data <- read.csv(file.path(CURDIR, "source-data", "cost_recovery_data.csv"))
