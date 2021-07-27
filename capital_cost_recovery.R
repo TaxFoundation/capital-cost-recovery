@@ -1,27 +1,21 @@
 ###Capital cost recovery model###
 
-
-#Clear working environment#
-rm(list=ls())
-gc()
-
-
-#Set directory#
-# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-library("here")
-CURDIR <- here()
-
 #Install packages#
-
 library(readxl)
 library(reshape2)
 library(plyr)
 library(OECD)
+library(here)
 
+#Clear working environment#
+#rm(list=ls())
+#gc()
+
+#Find directory#
+CURDIR <- here::here()
 
 #Read in dataset containing depreciation data####
 data <- read.csv(file.path(CURDIR, "source-data", "cost_recovery_data.csv"))
-
 
 #Limit countries to OECD and EU countries
 data <- data[which(data$country=="AUS"
