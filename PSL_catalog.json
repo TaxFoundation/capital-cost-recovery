@@ -1,0 +1,37 @@
+{
+    "project_one_line": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<p>capital-cost-recovery is an open-source model calculating and comparing capital allowances for investments in machinery, buildings, and intangibles in OECD countries.</p>"
+    },
+    "project_overview": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/capital-cost-recovery/\">What is capital-cost-recovery?</a>"
+    },
+    "core_maintainers": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<ul><li>Daniel Bunn</li></ul>"
+    },
+    "user_documentation": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/capital-cost-recovery/blob/master/README.md/\"></a>"
+    },
+    "source_documentation": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/PSLmodels/capital-cost-recovery/blob/master/source_documentation.md\"></a>"
+    },
+}

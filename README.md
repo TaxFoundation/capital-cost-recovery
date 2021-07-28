@@ -2,6 +2,25 @@
 
 The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https://taxfoundation.org/publications/capital-cost-recovery-across-the-oecd/) shows how capital allowances compare across OECD countries and how they have developed since 2000. The dataset we compiled for the years 1979 to 2020 is made available as a resource for research.
 
+## Latest Release
+The current version of this project is 1.1.0 (2021-03-31).
+
+## Installation Directions
+You can analyze the data on your personal computer by using R.
+
+### Cloning the GitHub repository
+To install capital-cost-recovery, run the following in the folder you wish to store the files:
+
+```git clone https://github.com/TaxFoundation/capital-cost-recovery```
+
+```cd capital-cost-recovery```
+
+More details on cloning a repository can be found [here](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository).
+
+### Installing R
+If you haven't already done so, download and install [RStudio](https://www.rstudio.com/products/rstudio/).
+
+All necessary functions to run capital-cost-recovery can be called from capital-cost-recovery/capital_cost_recovery.R. See below for an explanation of the source data and the folders and files in the repository.
 
 
 ## The Dataset
@@ -81,3 +100,11 @@ Location of **output tables** that are included in the publication or needed to 
 - `npv_ranks_2020.csv` Table showing the net present value of capital allowances by OECD country and asset type for the year 2020. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking by each asset type and by the weighted average.
 
 - `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2020.
+
+
+## Contact Information
+This repository is maintained by [Daniel Bunn](mailto:dbunn@taxfoundation.org) at the [Tax Foundation](https://taxfoundation.org).
+
+
+## Suggested Citation
+Please cite the source of your analysis as "Tax Foundation, "Capital Cost Recovery across the OECD," author's calculations." If you would like to link to the GitHub repository, please use https://github.com/PSLmodels/capital-cost-recovery/tree/master. If you would like to link to the associated Tax Foundation publication, please use https://taxfoundation.org/publications/capital-cost-recovery-across-the-oecd/. 
