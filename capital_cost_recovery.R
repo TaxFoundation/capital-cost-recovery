@@ -696,7 +696,7 @@ write.csv(oecd_rates_weighted, paste(final_outputs,"cit_rates_timeseries.csv",se
 
 #Keep European countries and the year 2021
 data_europe_2021 <- subset(data, year==2021)
-data_europe_2021 <- subset(data_europe_2021, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
+data_europe_2021 <- subset(data_europe_2021, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
 
 #Drop columns that are not needed
 data_europe_2021 <- subset(data_europe_2021, select = c(iso_3, country, year, waverage))
