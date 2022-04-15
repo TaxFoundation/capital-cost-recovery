@@ -676,13 +676,9 @@ colnames(oecd_rates)[colnames(oecd_rates)=="COU"] <- "iso_3"
 #Add country names
 oecd_rates <- merge(oecd_rates, country_names, by='iso_3')
 
-#Add GDP (first rename country names)
+#Add GDP
 oecd_rates$country <- as.character(oecd_rates$country)
 
-oecd_rates$country[oecd_rates$country == "Czechia"] <- "Czech Republic"
-oecd_rates$country[oecd_rates$country == "United Kingdom of Great Britain and Northern Ireland"] <- "United Kingdom"
-oecd_rates$country[oecd_rates$country == "Republic of Korea"] <- "Korea"
-oecd_rates$country[oecd_rates$country == "United States of America"] <- "United States"
 
 oecd_rates <- merge(oecd_rates, gdp_long, by =c("country", "year"), all=FALSE)
 
