@@ -350,7 +350,7 @@ data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] <-
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2021,] * 0.00) + 1.00
 
 #Ajdust UK data to include super-deduction
-data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] * 0.00) + 1.30
 
 #Only keep columns with the calculated net present values
 data <- subset(data, select = c(country, year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
@@ -636,7 +636,7 @@ colnames(data_2021_ranking)[colnames(data_2021_ranking)=="intangibles_rank"] <- 
 write.csv(data_2021_ranking, paste(final_outputs,"npv_ranks_2021.csv",sep=""),row.names = FALSE)
 
 
-#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2020"
+#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2021"
 
 #Limit to OECD countries
 data_oecd_all_years <- subset(data, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
