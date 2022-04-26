@@ -36,7 +36,7 @@ using(reshape2)
 using(plyr)
 using(OECD)
 using(here)
-#using(tidyverse)
+using(readr)
 
 
 #Working space setup
@@ -324,10 +324,20 @@ data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_reco
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "LVA" & data$year >=2018,] <- 1
 
 #In fall 2018, Canada introduced full expensing for machinery
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year >= 2018,] <- 1
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2018,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2018,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2019,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2019,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2020,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2020,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2022,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2023,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2023,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] * 0.10) + 0.90
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] * 0.20) + 0.80
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] * 0.30) + 0.70
 
 #In 2020, Chile introduced full expensing
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "CHL" & data$year ==2020,] <- 1
+data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "CHL" & data$year ==2021,] <- 1
+data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "CHL" & data$year ==2022,] <- 1
 
 
 #Adjust USA data to include bonus depreciation for machinery
@@ -348,9 +358,17 @@ data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2018,] <-
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2021,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2022,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2023,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2023,] * 0.20) + 0.80
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2024,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2024,] * 0.40) + 0.60
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2025,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2025,] * 0.60) + 0.40
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2026,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2026,] * 0.80) + 0.20
+
+
 
 #Ajdust UK data to include super-deduction
 data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] * 0.00) + 1.30
+data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] * 0.00) + 1.30
 
 #Only keep columns with the calculated net present values
 data <- subset(data, select = c(country, year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
@@ -394,7 +412,7 @@ data <- merge(country_names, data, by='iso_3')
 #Reading in GDP data
 gdp_historical_2010<- read_excel("source-data/gdp_historical_2010.xlsx", range = "A12:AN230")
 gdp_historical_2015<- read_excel("source-data/gdp_historical_2015.xlsx", range = "A14:V234")
-gdp_projected_2015 <- read_excel("source-data/gdp_projected_2015.xlsx", range = "A14:K234")
+gdp_projected_2015 <- read_excel("source-data/gdp_projected_2015.xlsx", range = "A14:P234")
 
 #Merging historical and projected data
 gdp_historical_2010 <-gdp_historical_2010[,-c(21:40)]
