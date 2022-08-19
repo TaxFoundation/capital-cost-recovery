@@ -43,7 +43,7 @@ library(reshape2)
 library(plyr)
 library(OECD)
 library(here)
-library(tidyverse)
+# library(tidyverse)
 
 
 #Working space setup
@@ -381,14 +381,14 @@ data <- subset(data, select = -c(weighted_machines, weighted_buildings, weighted
 #Import and match country names by ISO-3 codes#####
 
 #Read in country name file
-country_names <- read_csv(file.path(source_data_path, "country_codes.csv"))
+country_names <- read.csv(file.path(source_data_path, "country_codes.csv"))
 
 #Keep and rename selected columns
-country_names <- subset(country_names, select = c("official_name_en", "ISO3166-1-Alpha-3", "ISO3166-1-Alpha-2"))
+country_names <- subset(country_names, select = c("official_name_en", "ISO3166.1.Alpha.3", "ISO3166.1.Alpha.2"))
 
 colnames(country_names)[colnames(country_names)=="official_name_en"] <- "country"
-colnames(country_names)[colnames(country_names)=="ISO3166-1-Alpha-3"] <- "iso_3"
-colnames(country_names)[colnames(country_names)=="ISO3166-1-Alpha-2"] <- "iso_2"
+colnames(country_names)[colnames(country_names)=="ISO3166.1.Alpha.3"] <- "iso_3"
+colnames(country_names)[colnames(country_names)=="ISO3166.1.Alpha.2"] <- "iso_2"
 
 #Rename column "country" in data
 colnames(data)[colnames(data)=="country"] <- "iso_3"
