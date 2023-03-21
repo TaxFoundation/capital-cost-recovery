@@ -36,14 +36,15 @@ using(reshape2)
 using(plyr)
 using(OECD)
 using(here)
+using(readr)
 #using(tidyverse)
 
 
 #Working space setup
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-source_data<-"C:/Github/capital-cost-recovery/source-data/"
-final_data<-"C:/Github/capital-cost-recovery/final-data/"
-final_outputs<-"C:/Github/capital-cost-recovery/final-outputs/"
+source_data<-"C:/Users/acer/Documents/GitHub/capital-cost-recovery/source-data/"
+final_data<-"C:/Users/acer/Documents/GitHub/capital-cost-recovery/final-data/"
+final_outputs<-"C:/Users/acer/Documents/GitHub/capital-cost-recovery/final-outputs/"
 
 
 #Find directory#
@@ -317,6 +318,7 @@ data$intangibles_cost_recovery[data$taxdepintangibltype == "SL2" & !is.na(data$t
   data$taxdeprintangiblsl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
   data$taxdepintangibltimesl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)], 0.075)
 
+
 #In 2000, Estonia moved to a cash-flow type business tax - all allowances need to be coded as 1
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "EST" & data$year >=2000,] <- 1
 
@@ -348,9 +350,11 @@ data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2018,] <-
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2019,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2020,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2021,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2022,] * 0.00) + 1.00
 
 #Ajdust UK data to include super-deduction
 data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] * 0.00) + 1.30
+data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2022,] * 0.00) + 1.30
 
 #Only keep columns with the calculated net present values
 data <- subset(data, select = c(country, year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
@@ -387,64 +391,87 @@ colnames(data)[colnames(data)=="country"] <- "iso_3"
 data <- merge(country_names, data, by='iso_3')
 
 
+
 #Adding GDP to the dataset#######
 
 #GDP Data####
 
 #Reading in GDP data
-gdp_historical_2010<- read_excel("source-data/gdp_historical_2010.xlsx", range = "A12:AN230")
-gdp_historical_2015<- read_excel("source-data/gdp_historical_2015.xlsx", range = "A14:V234")
-gdp_projected_2015 <- read_excel("source-data/gdp_projected_2015.xlsx", range = "A14:K234")
+gdp<- read_excel("source-data/RealGDPValues.xlsx", range = "A14:BL234")
 
-#Merging historical and projected data
-gdp_historical_2010 <-gdp_historical_2010[,-c(21:40)]
-gdp_projected_2015 <- gdp_projected_2015[,-c(2:9)]
+#Drop rows that contain data of regions
+colnames(gdp)[colnames(gdp)=="Country"] <- "country"
+gdp$country <- as.character(gdp$country)
+gdp <- subset(gdp, gdp$country != "Africa"
+              & gdp$country != "Asia"
+              & gdp$country != "Asia and Oceania"
+              & gdp$country != "Asia less Japan"
+              & gdp$country != "Belgium and Luxembourg"
+              & gdp$country != "East Asia"
+              & gdp$country != "East Asia less Japan"
+              & gdp$country != "Europe"
+              & gdp$country != "European Union 15"
+              & gdp$country != "European Union 28"
+              & gdp$country != "European Union 27"
+              & gdp$country != "Euro Zone"
+              & gdp$country != "Former Soviet Union"
+              & gdp$country != "Latin America"
+              & gdp$country != "Middle East"
+              & gdp$country != "North Africa"
+              & gdp$country != "North America"
+              & gdp$country != "Oceania"
+              & gdp$country != "Other Asia Oceania"
+              & gdp$country != "Other Caribbean Central America"
+              & gdp$country != "Other Central Europe"
+              & gdp$country != "Other East Asia"
+              & gdp$country != "Other Europe"
+              & gdp$country != "Other Former Soviet Union"
+              & gdp$country != "Other Middle East"
+              & gdp$country != "Other North Africa"
+              & gdp$country != "Other Oceania"
+              & gdp$country != "Other South America"
+              & gdp$country != "Other South Asia"
+              & gdp$country != "Other Southeast Asia"
+              & gdp$country != "Other Sub-Saharan Africa"
+              & gdp$country != "Other West African Community"
+              & gdp$country != "Other Western Europe"
+              & gdp$country != "Recently Acceded Countries"
+              & gdp$country != "Recently acceded countries"
+              & gdp$country != "South America"
+              & gdp$country != "South Asia"
+              & gdp$country != "Southeast Asia"
+              & gdp$country != "Sub-Saharan Africa"
+              & gdp$country != "United States and Canada"
+              & gdp$country != "World"
+              & gdp$country != "World less USA")
 
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Antigua Barbuda"] <- "Antigua and Barbuda"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Dominican Rep"] <- "Dominican Republic"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "St Kitts Nevis"] <- "St. Kitts and Nevis"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "St Lucia"] <- "St. Lucia"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "St Vincent Grenadines"] <- "St. Vincent and Grenadines"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "UK"] <- "United Kingdom"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Bosnia Herzegovina"] <- "Bosnia and Herzegovina"
-#gdp_historical_2015$Country[gdp_historical_2015$Country == "Côte d'Ivoire"] <- "Cote d'Ivoire"
-#gdp_projected_2015$Country[gdp_projected_2015$Country == "Côte d'Ivoire"] <- "Cote d'Ivoire"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Guinea Bissau"] <- "Guinea-Bissau"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Central Afr Rep"] <- "Central African Republic"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Dem Rep Congo"] <- "Democratic Republic of the Congo"
-gdp_historical_2015$Country[gdp_historical_2015$Country == "Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
-gdp_projected_2015$Country[gdp_projected_2015$Country == "Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Rep Congo"] <- "Republic of the Congo"
-gdp_historical_2015$Country[gdp_historical_2015$Country == "Republic of Congo"] <- "Republic of the Congo"
-gdp_projected_2015$Country[gdp_projected_2015$Country == "Republic of Congo"] <- "Republic of the Congo"
-gdp_historical_2010$Country[gdp_historical_2010$Country == "Sao Tome Principe"] <- "Sao Tome and Principe"
-#gdp_historical_2015$Country[gdp_historical_2015$Country == "São Tomé and Principe"] <- "Sao Tome and Principe"
-#gdp_projected_2015$Country[gdp_projected_2015$Country == "São Tomé and Principe"] <- "Sao Tome and Principe"
-gdp_historical_2015$Country[gdp_historical_2015$Country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
-gdp_projected_2015$Country[gdp_projected_2015$Country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
-gdp_historical_2015$Country[gdp_historical_2015$Country == "St. Vincent Grenadines"] <- "St. Vincent and Grenadines"
-gdp_projected_2015$Country[gdp_projected_2015$Country == "St. Vincent Grenadines"] <- "St. Vincent and Grenadines"
-gdp_historical_2015$Country[gdp_historical_2015$Country == "Swaziland/Eswatini"] <- "Swaziland"
-gdp_projected_2015$Country[gdp_projected_2015$Country == "Swaziland/Eswatini"] <- "Swaziland"
 
+#gdp$country[gdp$country == "Antigua Barbuda"] <- "Antigua and Barbuda"
+#gdp$country[gdp$country == "Dominican Rep"] <- "Dominican Republic"
+#gdp$country[gdp$country == "St Kitts Nevis"] <- "St. Kitts and Nevis"
+#gdp$country[gdp$country == "St Lucia"] <- "St. Lucia"
+#gdp$country[gdp$country == "St Vincent Grenadines"] <- "St. Vincent and Grenadines"
+#gdp$country[gdp$country == "UK"] <- "United Kingdom"
+#gdp$country[gdp$country == "Bosnia Herzegovina"] <- "Bosnia and Herzegovina"
+#gdp$country[gdp$country == "C?te d'Ivoire"] <- "Cote d'Ivoire"
+#gdp$country[gdp$country == "C?te d'Ivoire"] <- "Cote d'Ivoire"
+#gdp$country[gdp$country == "Guinea Bissau"] <- "Guinea-Bissau"
+#gdp$country[gdp$country == "Central Afr Rep"] <- "Central African Republic"
+#gdp$country[gdp$country == "Dem Rep Congo"] <- "Democratic Republic of the Congo"
+gdp$country[gdp$country == "Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
+#gdp$country[gdp$country == "Rep Congo"] <- "Republic of the Congo"
+gdp$country[gdp$country == "Republic of Congo"] <- "Republic of the Congo"
+#gdp$country[gdp$country == "Sao Tome Principe"] <- "Sao Tome and Principe"
+#gdp$country[gdp$country == "S?o Tom? and Principe"] <- "Sao Tome and Principe"
+#gdp$country[gdp$country == "S?o Tom? and Principe"] <- "Sao Tome and Principe"
+#gdp$country[gdp$country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
+#gdp$country[gdp$country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
+#gdp$country[gdp$country == "St. Vincent Grenadines"] <- "St. Vincent and Grenadines"
+#gdp$country[gdp$country == "St. Vincent Grenadines"] <- "St. Vincent and Grenadines"
 
-#Add Qatar and Zimbabwe to gdp_historical_2010
-Qatar<-c("Qatar",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
-Zimbabwe<-c("Zimbabwe",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
-
-gdp_historical_2010<-(rbind(gdp_historical_2010,Qatar))
-gdp_historical_2010<-(rbind(gdp_historical_2010,Zimbabwe))
-
-
-#write.csv(gdp_historical_2010,"gdp_historical_2010.csv",row.names = F)
-#write.csv(gdp_historical_2015,"gdp_historical_2015.csv",row.names = F)
-#write.csv(gdp_projected_2015,"gdp_projected_2015.csv",row.names = F)
-
-gdp <- merge(gdp_historical_2010, gdp_historical_2015, by="Country", All=T)
-gdp <- merge(gdp, gdp_projected_2015, by="Country", All=T)
+gdp$country[gdp$country == "Swaziland/Eswatini"] <- "Swaziland"
 
 #write.csv(gdp,"gdp.csv", row.names=F)
-colnames(gdp)[colnames(gdp)=="Country"] <- "country"
 
 #Renaming countries in gdp dataset to match iso-codes
 gdp$country[gdp$country == "Bolivia"] <- "Bolivia (Plurinational State of)"
@@ -470,76 +497,25 @@ gdp$country[gdp$country == "Venezuela"] <- "Venezuela (Bolivarian Republic of)"
 gdp$country[gdp$country == "Vietnam"] <- "Viet Nam"
 
 
-#Drop rows that contain data of regions
-gdp$country <- as.character(gdp$country)
-gdp <- subset(gdp, gdp$country != "Africa"
-              & gdp$country != "Asia"
-              & gdp$country != "Asia and Oceania"
-              & gdp$country != "Asia Less Japan"
-              & gdp$country != "Belgium Luxembourg"
-              & gdp$country != "East Asia"
-              & gdp$country != "East Asia Less Japan"
-              & gdp$country != "Europe"
-              & gdp$country != "European Union 15"
-              & gdp$country != "European Union 28"
-              & gdp$country != "Euro Zone"
-              & gdp$country != "Former Soviet Union"
-              & gdp$country != "Latin America"
-              & gdp$country != "Middle East"
-              & gdp$country != "North Africa"
-              & gdp$country != "North America"
-              & gdp$country != "Oceania"
-              & gdp$country != "Other Asia Oceania"
-              & gdp$country != "Other Caribbean Central America"
-              & gdp$country != "Other Central Europe"
-              & gdp$country != "Other East Asia"
-              & gdp$country != "Other Europe"
-              & gdp$country != "Other Former Soviet Union"
-              & gdp$country != "Other Middle East"
-              & gdp$country != "Other North Africa"
-              & gdp$country != "Other Oceania"
-              & gdp$country != "Other South America"
-              & gdp$country != "Other South Asia"
-              & gdp$country != "Other Southeast Asia"
-              & gdp$country != "Other Sub-Saharan Africa"
-              & gdp$country != "Other West African Community"
-              & gdp$country != "Other Western Europe"
-              & gdp$country != "Recently Acceded Countries"
-              & gdp$country != "South America"
-              & gdp$country != "South Asia"
-              & gdp$country != "Southeast Asia"
-              & gdp$country != "Sub-Saharan Africa"
-              & gdp$country != "World"
-              & gdp$country != "World Less USA")
-
-
-
-#Reading in and merging GDP datasets
-#gdp_historical <- read_excel(paste(source_data, "gdp_historical.xlsx"), range = "A14:V234")
-#gdp_projected <- read_excel(file.path(CURDIR, "source-data", "gdp_projected.xlsx"), range = "A14:J234")
-
-#gdp_historical$Country[gdp_historical$Country == "UK"] <- "United Kingdom"
-
-#gdp_projected <- subset(gdp_projected, select = c(Country, `2020`))
-#gdp <- merge(gdp_historical,gdp_projected, by="Country")
-#colnames(gdp)[colnames(gdp)=="Country"] <- "country"
-
-#Renaming country names so data and gdp can be matched
-#gdp$country <- as.character(gdp$country)
-#data$country <- as.character(data$country)
-
-#data$country[data$country == "Czechia"] <- "Czech Republic"
-#data$country[data$country == "United Kingdom of Great Britain and Northern Ireland"] <- "United Kingdom"
-#data$country[data$country == "Republic of Korea"] <- "Korea"
-#data$country[data$country == "United States of America"] <- "United States"
-
 #Change format of GDP data from wide to long
+gdp$country <- as.character(gdp$country)
+data$country <- as.character(data$country)
 gdp_long <- (melt(gdp, id=c("country")))
 colnames(gdp_long)[colnames(gdp_long)=="variable"] <- "year"
 colnames(gdp_long)[colnames(gdp_long)=="value"] <- "gdp"
 
+#delete the "y" before the year"
+gdp_long$year <- gsub("^.{0,1}", "", gdp_long$year)
+
 #Merge net present value data with GDP data
 data <- merge(data, gdp_long, by =c("country", "year"), all=TRUE)
+
+
+#Renaming countries####
+data$country[data$country == "Czechia"] <- "Czech Republic"
+data$country[data$country == "United Kingdom of Great Britain and Northern Ireland"] <- "United Kingdom"
+data$country[data$country == "Republic of Korea"] <- "Korea"
+data$country[data$country == "United States of America"] <- "United States"
 
 #Drop non-OECD/non-EU countries
 #Limit countries to OECD and EU countries
@@ -594,55 +570,58 @@ write.csv(data, paste(final_data,"npv_all_years.csv",sep=""), row.names = FALSE)
 
 #Create output tables and data for the graphs included in the report#####
 
-#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2021"
+#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2022"
 
-#Limit to OECD countries and 2021
-data_oecd_2021 <- subset(data, year==2021)
-data_oecd_2021 <- subset(data_oecd_2021, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
+#Limit to OECD countries and 2022
+data_oecd_2022 <- subset(data, year==2022)
+data_oecd_2022 <- subset(data_oecd_2022, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
 #Create rankings
-data_2021_ranking <- data_oecd_2021
+data_2022_ranking <- data_oecd_2022
 
-data_2021_ranking$buildings_rank <- rank(-data_2021_ranking$`buildings_cost_recovery`,ties.method = "min")
-data_2021_ranking$machines_rank <- rank(-data_2021_ranking$`machines_cost_recovery`,ties.method = "min")
-data_2021_ranking$intangibles_rank <- rank(-data_2021_ranking$`intangibles_cost_recovery`,ties.method = "min")
+data_2022_ranking$buildings_rank <- rank(-data_2022_ranking$`buildings_cost_recovery`,ties.method = "min")
+data_2022_ranking$machines_rank <- rank(-data_2022_ranking$`machines_cost_recovery`,ties.method = "min")
+data_2022_ranking$intangibles_rank <- rank(-data_2022_ranking$`intangibles_cost_recovery`,ties.method = "min")
 
-data_2021_ranking$waverage_rank <- rank(-data_2021_ranking$`waverage`, ties.method = "min")
+data_2022_ranking$waverage_rank <- rank(-data_2022_ranking$`waverage`, ties.method = "min")
 
-data_2021_ranking <- subset(data_2021_ranking, select = -c(year, iso_3, average, gdp))
+data_2022_ranking <- subset(data_2022_ranking, select = -c(year, iso_3, average, gdp))
 
 #Order columns and sort data
-data_2021_ranking <- data_2021_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
+data_2022_ranking <- data_2022_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
 
-data_2021_ranking <- data_2021_ranking[order(-data_2021_ranking$waverage, data_2021_ranking$country),]
+data_2022_ranking <- data_2022_ranking[order(-data_2022_ranking$waverage, data_2022_ranking$country),]
 
 #Round digits
-data_2021_ranking$waverage <- round(data_2021_ranking$waverage, digits=3)
-data_2021_ranking$buildings_cost_recovery <- round(data_2021_ranking$buildings_cost_recovery, digits=3)
-data_2021_ranking$machines_cost_recovery <- round(data_2021_ranking$machines_cost_recovery, digits=3)
-data_2021_ranking$intangibles_cost_recovery <- round(data_2021_ranking$intangibles_cost_recovery, digits=3)
+data_2022_ranking$waverage <- round(data_2022_ranking$waverage, digits=3)
+data_2022_ranking$buildings_cost_recovery <- round(data_2022_ranking$buildings_cost_recovery, digits=3)
+data_2022_ranking$machines_cost_recovery <- round(data_2022_ranking$machines_cost_recovery, digits=3)
+data_2022_ranking$intangibles_cost_recovery <- round(data_2022_ranking$intangibles_cost_recovery, digits=3)
 
 #Rename column headers
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="country"] <- "Country"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="waverage"] <- "Weighted Average Allowance"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="waverage_rank"] <- "Weighted Average Rank"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="buildings_cost_recovery"] <- "Buildings Allowance"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="buildings_rank"] <- "Buildings Rank"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="machines_cost_recovery"] <- "Machinery Allowance"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="machines_rank"] <- "Machinery Rank"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
-colnames(data_2021_ranking)[colnames(data_2021_ranking)=="intangibles_rank"] <- "Intangibles Rank"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="country"] <- "Country"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="waverage"] <- "Weighted Average Allowance"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="waverage_rank"] <- "Weighted Average Rank"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="buildings_cost_recovery"] <- "Buildings Allowance"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="buildings_rank"] <- "Buildings Rank"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="machines_cost_recovery"] <- "Machinery Allowance"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="machines_rank"] <- "Machinery Rank"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
+colnames(data_2022_ranking)[colnames(data_2022_ranking)=="intangibles_rank"] <- "Intangibles Rank"
 
-write.csv(data_2021_ranking, paste(final_outputs,"npv_ranks_2021.csv",sep=""),row.names = FALSE)
+write.csv(data_2022_ranking, paste(final_outputs,"npv_ranks_2022.csv",sep=""),row.names = FALSE)
 
 
-#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2021"
+#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2022"
 
 #Limit to OECD countries
 data_oecd_all_years <- subset(data, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
 #Calculate timeseries averages
-data_weighted <- ddply(data_oecd_all_years, .(year),summarize, weighted_average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE),n = length(waverage[is.na(waverage) == FALSE]))
+data_oecd_all_years$gdp <- as.numeric(data_oecd_all_years$gdp)
+data_oecd_all_years$waverage <- as.numeric(data_oecd_all_years$waverage)
+data_oecd_all_years$average <- as.numeric(data_oecd_all_years$average)
+data_weighted <- ddply(data_oecd_all_years, .(year),summarize, weighted_average = weighted.mean(waverage, gdp, na.rm = TRUE), average = mean(waverage, na.rm = TRUE), n = length(waverage[is.na(waverage) == FALSE]))
 
 #Limit to years starting in 2000 (data for all OECD countries is available starting in 2000)
 data_weighted <- data_weighted[data_weighted$year>1999,]
@@ -652,7 +631,7 @@ colnames(data_weighted)[colnames(data_weighted)=="n"] <- "country_count"
 write.csv(data_weighted, paste(final_outputs,"npv_weighted_timeseries.csv",sep=""), row.names = FALSE)
 
 
-#Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2020"
+#Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2022"
 
 #Read in dataset
 dataset_list <- get_datasets()
@@ -669,12 +648,13 @@ oecd_rates <- get_dataset("TABLE_II1", start_time = 2000)
 oecd_rates <- subset(oecd_rates, oecd_rates$CORP_TAX=="COMB_CIT_RATE")
 oecd_rates <- subset(oecd_rates, select = -c(CORP_TAX,TIME_FORMAT))
 
-colnames(oecd_rates)[colnames(oecd_rates)=="obsValue"] <- "rate"
-colnames(oecd_rates)[colnames(oecd_rates)=="obsTime"] <- "year"
+colnames(oecd_rates)[colnames(oecd_rates)=="ObsValue"] <- "rate"
+colnames(oecd_rates)[colnames(oecd_rates)=="Time"] <- "year"
 colnames(oecd_rates)[colnames(oecd_rates)=="COU"] <- "iso_3"
 
 #Add country names
 oecd_rates <- merge(oecd_rates, country_names, by='iso_3')
+
 
 #Add GDP
 oecd_rates$country <- as.character(oecd_rates$country)
@@ -683,6 +663,8 @@ oecd_rates$country <- as.character(oecd_rates$country)
 oecd_rates <- merge(oecd_rates, gdp_long, by =c("country", "year"), all=FALSE)
 
 #Weigh corporate rates by GDP
+oecd_rates$gdp <- as.numeric(oecd_rates$gdp)
+oecd_rates$rate <- as.numeric(oecd_rates$rate)
 oecd_rates_weighted <- ddply(oecd_rates, .(year),summarize, weighted_average = weighted.mean(rate, gdp, na.rm = TRUE), average = mean(rate, na.rm = TRUE),n = length(rate[is.na(rate) == FALSE]))
 
 write.csv(oecd_rates_weighted, paste(final_outputs,"cit_rates_timeseries.csv",sep=""),row.names = FALSE)
@@ -690,44 +672,44 @@ write.csv(oecd_rates_weighted, paste(final_outputs,"cit_rates_timeseries.csv",se
 
 #Data for map: "Net Present Value of Capital Allowances in Europe"
 
-#Keep European countries and the year 2021
-data_europe_2021 <- subset(data, year==2021)
-data_europe_2021 <- subset(data_europe_2021, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
+#Keep European countries and the year 2022
+data_europe_2022 <- subset(data, year==2022)
+data_europe_2022 <- subset(data_europe_2022, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
 
 #Drop columns that are not needed
-data_europe_2021 <- subset(data_europe_2021, select = c(iso_3, country, year, waverage))
+data_europe_2022 <- subset(data_europe_2022, select = c(iso_3, country, year, waverage))
 
 #Sort data
-data_europe_2021 <- data_europe_2021[order(-data_europe_2021$waverage, data_europe_2021$country),]
+data_europe_2022 <- data_europe_2022[order(-data_europe_2022$waverage, data_europe_2022$country),]
 
 #Add ranking
-data_europe_2021$rank <- rank(-data_europe_2021$`waverage`,ties.method = "min")
+data_europe_2022$rank <- rank(-data_europe_2022$`waverage`,ties.method = "min")
 
-write.csv(data_europe_2021, paste(final_outputs,"npv_europe.csv",sep=""),row.names = FALSE)
+write.csv(data_europe_2022, paste(final_outputs,"npv_europe.csv",sep=""),row.names = FALSE)
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
 
-#Limit to EU countries and 2021
-data_eu27_2021 <- subset(data, year==2021)
-data_eu27_2021 <- subset(data_eu27_2021, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "ISL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "NOR" & iso_3 != "CHE" & iso_3 != "TUR" & iso_3 != "GBR" & iso_3 != "USA")
+#Limit to EU countries and 2022
+data_eu27_2022 <- subset(data, year==2022)
+data_eu27_2022 <- subset(data_eu27_2022, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI"& iso_3 != "ISL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "NOR" & iso_3 != "CHE" & iso_3 != "TUR" & iso_3 != "GBR" & iso_3 != "USA")
 
 #Drop columns that are not needed
-data_eu27_2021 <- subset(data_eu27_2021, select = c(iso_3, country, year, waverage))
+data_eu27_2022 <- subset(data_eu27_2022, select = c(iso_3, country, year, waverage))
 
 #Sort data
-data_eu27_2021 <- data_eu27_2021[order(-data_eu27_2021$waverage, data_eu27_2021$country),]
+data_eu27_2022 <- data_eu27_2022[order(-data_eu27_2022$waverage, data_eu27_2022$country),]
 
 #Add weighted average of capital allowances under CCTB
-cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2021), waverage = c(0.673))
-data_eu27_2021 <- rbind(data_eu27_2021, cctb)
+cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2022), waverage = c(0.673))
+data_eu27_2022 <- rbind(data_eu27_2022, cctb)
 
-write.csv(data_eu27_2021, paste(final_outputs,"eu_cctb.csv",sep=""),row.names = FALSE)
+write.csv(data_eu27_2022, paste(final_outputs,"eu_cctb.csv",sep=""),row.names = FALSE)
 
 
-#Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2021"
+#Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2022"
 
 #Calculate averages by asset type
-average_assets <- ddply(data_oecd_2021, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
+average_assets <- ddply(data_oecd_2022, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
 write.csv(average_assets, paste(final_outputs,"asset_averages.csv",sep=""),row.names = FALSE)
