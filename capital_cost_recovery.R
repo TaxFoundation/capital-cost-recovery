@@ -50,7 +50,7 @@ final_outputs<-"C:/GitHub/capital-cost-recovery/final-outputs/"
 #Find directory#
 CURDIR <- here::here()
 
-# Ceate directories will write output to in case they don't exist
+#Create directories will write output to in case they don't exist
 dir.create(file.path(CURDIR, "final-data"), showWarnings = FALSE)
 dir.create(file.path(CURDIR, "final-outputs"), showWarnings = FALSE)
 
@@ -446,31 +446,10 @@ gdp <- subset(gdp, gdp$country != "Africa"
               & gdp$country != "United States and Canada"
               & gdp$country != "World"
               & gdp$country != "World less USA")
-
-
-#gdp$country[gdp$country == "Antigua Barbuda"] <- "Antigua and Barbuda"
-#gdp$country[gdp$country == "Dominican Rep"] <- "Dominican Republic"
-#gdp$country[gdp$country == "St Kitts Nevis"] <- "St. Kitts and Nevis"
-#gdp$country[gdp$country == "St Lucia"] <- "St. Lucia"
-#gdp$country[gdp$country == "St Vincent Grenadines"] <- "St. Vincent and Grenadines"
-#gdp$country[gdp$country == "UK"] <- "United Kingdom"
-#gdp$country[gdp$country == "Bosnia Herzegovina"] <- "Bosnia and Herzegovina"
-#gdp$country[gdp$country == "C?te d'Ivoire"] <- "Cote d'Ivoire"
-#gdp$country[gdp$country == "C?te d'Ivoire"] <- "Cote d'Ivoire"
-#gdp$country[gdp$country == "Guinea Bissau"] <- "Guinea-Bissau"
-#gdp$country[gdp$country == "Central Afr Rep"] <- "Central African Republic"
-#gdp$country[gdp$country == "Dem Rep Congo"] <- "Democratic Republic of the Congo"
+                                                                                            
+#Renaming countries in gdp dataset
 gdp$country[gdp$country == "Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
-#gdp$country[gdp$country == "Rep Congo"] <- "Republic of the Congo"
 gdp$country[gdp$country == "Republic of Congo"] <- "Republic of the Congo"
-#gdp$country[gdp$country == "Sao Tome Principe"] <- "Sao Tome and Principe"
-#gdp$country[gdp$country == "S?o Tom? and Principe"] <- "Sao Tome and Principe"
-#gdp$country[gdp$country == "S?o Tom? and Principe"] <- "Sao Tome and Principe"
-#gdp$country[gdp$country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
-#gdp$country[gdp$country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
-#gdp$country[gdp$country == "St. Vincent Grenadines"] <- "St. Vincent and Grenadines"
-#gdp$country[gdp$country == "St. Vincent Grenadines"] <- "St. Vincent and Grenadines"
-
 gdp$country[gdp$country == "Swaziland/Eswatini"] <- "Swaziland"
 
 #write.csv(gdp,"gdp.csv", row.names=F)
