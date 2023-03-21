@@ -42,9 +42,9 @@ using(readr)
 
 #Working space setup
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-source_data<-"C:/Users/acer/Documents/GitHub/capital-cost-recovery/source-data/"
-final_data<-"C:/Users/acer/Documents/GitHub/capital-cost-recovery/final-data/"
-final_outputs<-"C:/Users/acer/Documents/GitHub/capital-cost-recovery/final-outputs/"
+source_data<-"C:/GitHub/capital-cost-recovery/source-data/"
+final_data<-"C:/GitHub/capital-cost-recovery/final-data/"
+final_outputs<-"C:/GitHub/capital-cost-recovery/final-outputs/"
 
 
 #Find directory#
