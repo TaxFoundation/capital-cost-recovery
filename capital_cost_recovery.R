@@ -578,7 +578,7 @@ data_2022_ranking <- data_2022_ranking[c("country", "waverage_rank", "waverage",
 data_2022_ranking <- data_2022_ranking[order(-data_2022_ranking$waverage, data_2022_ranking$country),]
 
 #Round digits
-data_2022_ranking$waverage <- round(dat2a_2022_ranking$waverage, digits=3)
+data_2022_ranking$waverage <- round(data_2022_ranking$waverage, digits=3)
 data_2022_ranking$buildings_cost_recovery <- round(data_2022_ranking$buildings_cost_recovery, digits=3)
 data_2022_ranking$machines_cost_recovery <- round(data_2022_ranking$machines_cost_recovery, digits=3)
 data_2022_ranking$intangibles_cost_recovery <- round(data_2022_ranking$intangibles_cost_recovery, digits=3)
