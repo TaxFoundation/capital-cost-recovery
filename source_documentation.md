@@ -3,19 +3,19 @@
 
 ## **CAPITAL COST ALLOWANCES**
 
-### Depreciation schedule data for the years 2017 to 2020:
+### Depreciation schedule data for the years 2017 to 2022:
 
 * Christoph Spengel, Frank Schmidt, Jost Heckemeyer, and Katharina Nicolay, “Effective Tax Levels Using the Devereux/Griffith Methodology,” European Commission, October 2021, https://ec.europa.eu/taxation_customs/system/files/2022-03/final_report_2021_effective_tax_levels_revised_en.pdf.
 
 * Bloomberg Tax, “Country Guides,” https://www.bloomberglaw.com/product/tax/toc_view_menu/3380/node/3380.
 
-* EY, “Worldwide Capital and Fixed Assets Guide 2021,” June 10, 2021, https://www.ey.com/en_gl/tax-guides/worldwide-capital-and-fixed-assets-guide.
+* EY, “Worldwide Capital and Fixed Assets Guide 2022,” July 17, 2022, https://www.ey.com/en_gl/tax-guides/worldwide-capital-and-fixed-assets-guide.
 
-* EY, “Worldwide Corporate Tax Guide 2021,” Aug. 17, 2021, https://www.ey.com/en_gl/tax-guides/worldwide-corporate-tax-guide.
+* EY, “Worldwide Corporate Tax Guide 2022,” Aug. 1, 2022, https://www.ey.com/en_gl/tax-guides/worldwide-corporate-tax-guide.
 
 * PwC, “Worldwide Tax Summaries,” https://taxsummaries.pwc.com/.
 
-* PKF, "International Worldwide Tax Guide 2021-22," Aug. 2, 2021, https://www.pkf.com/publications/tax-guides/worldwide-tax-guide-2021-22/.
+* PKF, "International Worldwide Tax Guide 2022-23," July 31, 2022, https://www.pkf.com/publications/tax-guides/worldwide-tax-guide-2022-23/.
 
 ### Depreciation schedule data for the years 1983 to 2016:
 
@@ -24,14 +24,12 @@ At this point, CBT has not updated the dataset since 2017; the 2017 version is a
 
 ____________________________________________________
 ## **COMBINED CORPORATE INCOME TAX RATE**
-* OECD, "OECD Tax Database, Table II.1 Statutory corporate income tax rate," updated April 2021, https://stats.oecd.org/index.aspx?DataSetCode=Table_II1.
+* OECD, "OECD Tax Database, Table II.1 Statutory corporate income tax rate," updated May 2022, https://stats.oecd.org/index.aspx?DataSetCode=Table_II1.
 
 ____________________________________________________
 ## **GROSS DOMESTIC PRODUCT (GDP)**
 
-* For years prior to 1999, U.S. Department of Agriculture, “International Macroeconomics Data Set - Historical Real Gross Domestic Product (GDP) and Growth Rates of GDP for Baseline Countries/Regions (in billions of 2010 dollars) 1980-2018,” Jan. 3, 2020, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/.
-* For years following 1999, U.S. Department of Agriculture, “International Macroeconomics Data Set - Projected Real Gross Domestic Product (GDP) and Growth Rates of GDP for Baseline Countries/Regions (in billions of 2015 dollars) 2012-2032,” Jan. 7, 2021, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/, and U.S. Department of Agriculture, “International Macroeconomics Data Set - Historical Real Gross Domestic Product (GDP) and Growth Rates of GDP for Baseline Countries/Regions (in billions of 2015 dollars) 1999-2019,” Jan. 7, 2021, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/.
-
+* U.S. Department of Agriculture, “International Macroeconomics Data Set - Historial and Projected Real Gross Domestic Product (GDP) and Growth Rates of GDP for Baseline Countries/Regions (in billions of 2015 dollars) 1970-2032,” Aug. 29, 2022, https://www.ers.usda.gov/data-products/international-macroeconomic-data-set/.
 
 ____________________________________________________
 ## **COUNTRY CODES**
