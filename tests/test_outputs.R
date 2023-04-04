@@ -5,7 +5,7 @@ proj_dir <- here::here()
 
 # Test files in the final-ouptuts directory
 file_list = list("asset_averages", "cit_rates_timeseries", "eu_cctb",
-                 "npv_europe", "npv_ranks_2020",
+                 "npv_europe", "npv_ranks_2022",
                  "npv_weighted_timeseries")
 for (file in file_list) {
   test <- read.delim(file.path(proj_dir, "final-outputs", paste(file, ".csv", sep="")), sep=",", fill = TRUE)
