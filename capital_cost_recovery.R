@@ -30,32 +30,40 @@ using<-function(...,prompt=TRUE){
 
 
 
-#Install packages#
-using(readxl)
-using(reshape2)
-using(plyr)
-using(OECD)
-using(here)
-#using(tidyverse)
+#Install and load packages#
+# using(readxl)
+# using(reshape2)
+# using(plyr)
+# using(OECD)
+# using(here)
+# using(tidyverse)
+
+library(readxl)
+library(reshape2)
+library(plyr)
+library(OECD)
+library(here)
+# library(tidyverse)
 
 
 #Working space setup
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-source_data<-"C:/Github/capital-cost-recovery/source-data/"
-final_data<-"C:/Github/capital-cost-recovery/final-data/"
-final_outputs<-"C:/Github/capital-cost-recovery/final-outputs/"
-
-
 #Find directory#
-CURDIR <- here::here()
-
-# Ceate directories will write output to in case they don't exist
+isRStudio <- Sys.getenv("RSTUDIO") == "1"
+if (isRStudio){
+  CURDIR = dirname(rstudioapi::getActiveDocumentContext()$path)
+} else{
+  CURDIR <- here::here()
+}
+# Create directories will write output to in case they don't exist
 dir.create(file.path(CURDIR, "final-data"), showWarnings = FALSE)
 dir.create(file.path(CURDIR, "final-outputs"), showWarnings = FALSE)
+# create variables for paths for later read/write commands
+source_data_path <- file.path(CURDIR, "source-data")
+final_data_path <- file.path(CURDIR, "final-data")
+final_outputs_path <- file.path(CURDIR, "final-outputs")
 
 #Read in dataset containing depreciation data####
-data <- read_csv(paste(source_data,"cost_recovery_data.csv",sep=""))
-
+data <- read.csv(file.path(source_data_path, "cost_recovery_data.csv"))
 
 #Limit countries to OECD and EU countries
 data <- data[which(data$country=="AUS"
@@ -208,6 +216,8 @@ data[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.f
 #Treat "DB DB SL" as initialDB ("DB DB SL" -> "initialDB")
 data[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")] <- as.data.frame(sapply(data[c("taxdepbuildtype", "taxdepmachtype", "taxdepintangibltype")], function(x) gsub("DB DB SL", "initialDB", x)))
 
+# Set contants  #
+discount_factor = 0.075
 
 #Corrections to the dataset#
 
@@ -223,35 +233,35 @@ data[c('taxdepmachtimesl')][data$country == "USA" & data$year >1982 & data$year<
 #machines_cost_recovery####
 
 #DB
-data$machines_cost_recovery[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)] <- DB(data$taxdeprmachdb[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)],0.075)
-data$machines_cost_recovery[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)] <- DB(data$taxdeprmachdb[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)],0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)] <- DB(data$taxdeprmachdb[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)],discount_factor)
+data$machines_cost_recovery[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)] <- DB(data$taxdeprmachdb[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)],discount_factor)
 
 #SL
-data$machines_cost_recovery[data$taxdepmachtype == "SL" & !is.na(data$taxdepmachtype)] <- SL(data$taxdeprmachsl[data$taxdepmachtype == "SL" & !is.na(data$taxdepmachtype)],0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "SL" & !is.na(data$taxdepmachtype)] <- SL(data$taxdeprmachsl[data$taxdepmachtype == "SL" & !is.na(data$taxdepmachtype)],discount_factor)
 
 #initialDB
 data$machines_cost_recovery[data$taxdepmachtype == "initialDB" & !is.na(data$taxdepmachtype)] <- initialDB(data$taxdeprmachdb[data$taxdepmachtype == "initialDB" & !is.na(data$taxdepmachtype)],
-  data$taxdeprmachsl[data$taxdepmachtype == "initialDB" & !is.na(data$taxdepmachtype)], 0.075)
+  data$taxdeprmachsl[data$taxdepmachtype == "initialDB" & !is.na(data$taxdepmachtype)], discount_factor)
 
 #DB or SL
 data$machines_cost_recovery[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)] <- DBSL2(data$taxdeprmachdb[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)],
   data$taxdepmachtimedb[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)],
   data$taxdeprmachsl[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)],
-  data$taxdepmachtimesl[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)], 0.075)
+  data$taxdepmachtimesl[data$taxdepmachtype == "DB or SL" & !is.na(data$taxdepmachtype)], discount_factor)
 
 #SL2
 data$machines_cost_recovery[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)] <- SL2(data$taxdeprmachdb[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)],
   data$taxdepmachtimedb[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)],
   data$taxdeprmachsl[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)],
-  data$taxdepmachtimesl[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)], 0.075)
+  data$taxdepmachtimesl[data$taxdepmachtype == "SL2" & !is.na(data$taxdepmachtype)], discount_factor)
 
 #SLITA
-data$machines_cost_recovery[data$taxdepmachtype == "SLITA" & !is.na(data$taxdepmachtype)] <- SL(data$taxdeprmachsl[data$taxdepmachtype == "SLITA" & !is.na(data$taxdepmachtype)],0.075)
+data$machines_cost_recovery[data$taxdepmachtype == "SLITA" & !is.na(data$taxdepmachtype)] <- SL(data$taxdeprmachsl[data$taxdepmachtype == "SLITA" & !is.na(data$taxdepmachtype)],discount_factor)
 
 #CZK
 for (x in 1:length(data$taxdeprmachdb)){
   if(grepl("CZK",data$taxdepmachtype[x]) == TRUE){
-    data$machines_cost_recovery[x] <- CZK(data$taxdeprmachdb[x], 0.075)
+    data$machines_cost_recovery[x] <- CZK(data$taxdeprmachdb[x], discount_factor)
   }
 }
 
@@ -259,35 +269,35 @@ for (x in 1:length(data$taxdeprmachdb)){
 #buildings_cost_recovery####
 
 #DB
-data$buildings_cost_recovery[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)] <- DB(data$taxdeprbuilddb[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)],0.075)
-data$buildings_cost_recovery[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)] <- DB(data$taxdeprbuilddb[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)],0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)] <- DB(data$taxdeprbuilddb[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)],discount_factor)
+data$buildings_cost_recovery[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)] <- DB(data$taxdeprbuilddb[data$taxdepbuildtype == "DB" & !is.na(data$taxdepbuildtype)],discount_factor)
 
 #SL
-data$buildings_cost_recovery[data$taxdepbuildtype == "SL" & !is.na(data$taxdepbuildtype)] <- SL(data$taxdeprbuildsl[data$taxdepbuildtype == "SL" & !is.na(data$taxdepbuildtype)],0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "SL" & !is.na(data$taxdepbuildtype)] <- SL(data$taxdeprbuildsl[data$taxdepbuildtype == "SL" & !is.na(data$taxdepbuildtype)],discount_factor)
 
 #initialDB
 data$buildings_cost_recovery[data$taxdepbuildtype == "initialDB" & !is.na(data$taxdepbuildtype)] <- initialDB(data$taxdeprbuilddb[data$taxdepbuildtype == "initialDB" & !is.na(data$taxdepbuildtype)],
-  data$taxdeprbuildsl[data$taxdepbuildtype == "initialDB" & !is.na(data$taxdepbuildtype)], 0.075)
+  data$taxdeprbuildsl[data$taxdepbuildtype == "initialDB" & !is.na(data$taxdepbuildtype)], discount_factor)
 
 #DB or SL
 data$buildings_cost_recovery[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)] <- DBSL2(data$taxdeprbuilddb[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)],
   data$taxdeprbuildtimedb[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)],
   data$taxdeprbuildsl[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)],
-  data$taxdeprbuildtimesl[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)], 0.075)
+  data$taxdeprbuildtimesl[data$taxdepbuildtype == "DB or SL" & !is.na(data$taxdepbuildtype)], discount_factor)
 
 #SL2
 data$buildings_cost_recovery[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)] <- SL2(data$taxdeprbuilddb[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)],
   data$taxdeprbuildtimedb[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)],
   data$taxdeprbuildsl[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)],
-  data$taxdeprbuildtimesl[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)], 0.075)
+  data$taxdeprbuildtimesl[data$taxdepbuildtype == "SL2" & !is.na(data$taxdepbuildtype)], discount_factor)
 
 #SLITA
-data$buildings_cost_recovery[data$taxdepbuildtype == "SLITA" & !is.na(data$taxdepbuildtype)]<-SL(data$taxdeprbuildsl[data$taxdepbuildtype == "SLITA" & !is.na(data$taxdepbuildtype)],0.075)
+data$buildings_cost_recovery[data$taxdepbuildtype == "SLITA" & !is.na(data$taxdepbuildtype)]<-SL(data$taxdeprbuildsl[data$taxdepbuildtype == "SLITA" & !is.na(data$taxdepbuildtype)],discount_factor)
 
 #CZK
 for (x in 1:length(data$taxdeprbuilddb)){
   if(grepl("CZK",data$taxdepbuildtype[x]) == TRUE){
-    data$buildings_cost_recovery[x] <- CZK(data$taxdeprbuilddb[x], 0.075)
+    data$buildings_cost_recovery[x] <- CZK(data$taxdeprbuilddb[x], discount_factor)
   }
 }
 
@@ -295,27 +305,27 @@ for (x in 1:length(data$taxdeprbuilddb)){
 #intangibles_cost_recovery####
 
 #DB
-data$intangibles_cost_recovery[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)] <- DB(data$taxdeprintangibldb[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)], 0.075)
-data$intangibles_cost_recovery[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)] <- DB(data$taxdeprintangibldb[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)], 0.075)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)] <- DB(data$taxdeprintangibldb[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)], discount_factor)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)] <- DB(data$taxdeprintangibldb[data$taxdepintangibltype == "DB" & !is.na(data$taxdepintangibltype)], discount_factor)
 
 #SL
-data$intangibles_cost_recovery[data$taxdepintangibltype == "SL" & !is.na(data$taxdepintangibltype)] <- SL(data$taxdeprintangiblsl[data$taxdepintangibltype == "SL" & !is.na(data$taxdepintangibltype)], 0.075)
+data$intangibles_cost_recovery[data$taxdepintangibltype == "SL" & !is.na(data$taxdepintangibltype)] <- SL(data$taxdeprintangiblsl[data$taxdepintangibltype == "SL" & !is.na(data$taxdepintangibltype)], discount_factor)
 
 #initialDB
 data$intangibles_cost_recovery[data$taxdepintangibltype == "initialDB" & !is.na(data$taxdepintangibltype)] <- initialDB(data$taxdeprintangibldb[data$taxdepintangibltype == "initialDB" & !is.na(data$taxdepintangibltype)],
-  data$taxdeprintangiblsl[data$taxdepintangibltype == "initialDB" & !is.na(data$taxdepintangibltype)], 0.075)
+  data$taxdeprintangiblsl[data$taxdepintangibltype == "initialDB" & !is.na(data$taxdepintangibltype)], discount_factor)
 
 #DB or SL
 data$intangibles_cost_recovery[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)] <- DBSL2(data$taxdeprintangibldb[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)],
   data$taxdepintangibltimedb[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)],
   data$taxdeprintangiblsl[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)],
-  data$taxdepintangibltimesl[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)], 0.075)
+  data$taxdepintangibltimesl[data$taxdepintangibltype == "DB or SL" & !is.na(data$taxdepintangibltype)], discount_factor)
 
 #SL2
 data$intangibles_cost_recovery[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)] <- SL2(data$taxdeprintangibldb[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
   data$taxdepintangibltimedb[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
   data$taxdeprintangiblsl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
-  data$taxdepintangibltimesl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)], 0.075)
+  data$taxdepintangibltimesl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)], discount_factor)
 
 #In 2000, Estonia moved to a cash-flow type business tax - all allowances need to be coded as 1
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "EST" & data$year >=2000,] <- 1
@@ -371,14 +381,14 @@ data <- subset(data, select = -c(weighted_machines, weighted_buildings, weighted
 #Import and match country names by ISO-3 codes#####
 
 #Read in country name file
-country_names <- read_csv(paste(source_data,"country_codes.csv",sep=""))
+country_names <- read.csv(file.path(source_data_path, "country_codes.csv"))
 
 #Keep and rename selected columns
-country_names <- subset(country_names, select = c("official_name_en", "ISO3166-1-Alpha-3", "ISO3166-1-Alpha-2"))
+country_names <- subset(country_names, select = c("official_name_en", "ISO3166.1.Alpha.3", "ISO3166.1.Alpha.2"))
 
 colnames(country_names)[colnames(country_names)=="official_name_en"] <- "country"
-colnames(country_names)[colnames(country_names)=="ISO3166-1-Alpha-3"] <- "iso_3"
-colnames(country_names)[colnames(country_names)=="ISO3166-1-Alpha-2"] <- "iso_2"
+colnames(country_names)[colnames(country_names)=="ISO3166.1.Alpha.3"] <- "iso_3"
+colnames(country_names)[colnames(country_names)=="ISO3166.1.Alpha.2"] <- "iso_2"
 
 #Rename column "country" in data
 colnames(data)[colnames(data)=="country"] <- "iso_3"
@@ -392,9 +402,9 @@ data <- merge(country_names, data, by='iso_3')
 #GDP Data####
 
 #Reading in GDP data
-gdp_historical_2010<- read_excel("source-data/gdp_historical_2010.xlsx", range = "A12:AN230")
-gdp_historical_2015<- read_excel("source-data/gdp_historical_2015.xlsx", range = "A14:V234")
-gdp_projected_2015 <- read_excel("source-data/gdp_projected_2015.xlsx", range = "A14:K234")
+gdp_historical_2010<- read_excel(file.path(source_data_path, "gdp_historical_2010.xlsx"), range = "A12:AN230")
+gdp_historical_2015<- read_excel(file.path(source_data_path, "gdp_historical_2015.xlsx"), range = "A14:V234")
+gdp_projected_2015 <- read_excel(file.path(source_data_path, "gdp_projected_2015.xlsx"), range = "A14:K234")
 
 #Merging historical and projected data
 gdp_historical_2010 <-gdp_historical_2010[,-c(21:40)]
@@ -407,8 +417,8 @@ gdp_historical_2010$Country[gdp_historical_2010$Country == "St Lucia"] <- "St. L
 gdp_historical_2010$Country[gdp_historical_2010$Country == "St Vincent Grenadines"] <- "St. Vincent and Grenadines"
 gdp_historical_2010$Country[gdp_historical_2010$Country == "UK"] <- "United Kingdom"
 gdp_historical_2010$Country[gdp_historical_2010$Country == "Bosnia Herzegovina"] <- "Bosnia and Herzegovina"
-#gdp_historical_2015$Country[gdp_historical_2015$Country == "Côte d'Ivoire"] <- "Cote d'Ivoire"
-#gdp_projected_2015$Country[gdp_projected_2015$Country == "Côte d'Ivoire"] <- "Cote d'Ivoire"
+#gdp_historical_2015$Country[gdp_historical_2015$Country == "C?te d'Ivoire"] <- "Cote d'Ivoire"
+#gdp_projected_2015$Country[gdp_projected_2015$Country == "C?te d'Ivoire"] <- "Cote d'Ivoire"
 gdp_historical_2010$Country[gdp_historical_2010$Country == "Guinea Bissau"] <- "Guinea-Bissau"
 gdp_historical_2010$Country[gdp_historical_2010$Country == "Central Afr Rep"] <- "Central African Republic"
 gdp_historical_2010$Country[gdp_historical_2010$Country == "Dem Rep Congo"] <- "Democratic Republic of the Congo"
@@ -418,8 +428,8 @@ gdp_historical_2010$Country[gdp_historical_2010$Country == "Rep Congo"] <- "Repu
 gdp_historical_2015$Country[gdp_historical_2015$Country == "Republic of Congo"] <- "Republic of the Congo"
 gdp_projected_2015$Country[gdp_projected_2015$Country == "Republic of Congo"] <- "Republic of the Congo"
 gdp_historical_2010$Country[gdp_historical_2010$Country == "Sao Tome Principe"] <- "Sao Tome and Principe"
-#gdp_historical_2015$Country[gdp_historical_2015$Country == "São Tomé and Principe"] <- "Sao Tome and Principe"
-#gdp_projected_2015$Country[gdp_projected_2015$Country == "São Tomé and Principe"] <- "Sao Tome and Principe"
+#gdp_historical_2015$Country[gdp_historical_2015$Country == "S?o Tom? and Principe"] <- "Sao Tome and Principe"
+#gdp_projected_2015$Country[gdp_projected_2015$Country == "S?o Tom? and Principe"] <- "Sao Tome and Principe"
 gdp_historical_2015$Country[gdp_historical_2015$Country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
 gdp_projected_2015$Country[gdp_projected_2015$Country == "St. Kitts Nevis"] <- "St. Kitts and Nevis"
 gdp_historical_2015$Country[gdp_historical_2015$Country == "St. Vincent Grenadines"] <- "St. Vincent and Grenadines"
@@ -442,6 +452,8 @@ gdp_historical_2010<-(rbind(gdp_historical_2010,Zimbabwe))
 
 gdp <- merge(gdp_historical_2010, gdp_historical_2015, by="Country", All=T)
 gdp <- merge(gdp, gdp_projected_2015, by="Country", All=T)
+# some gdp values are read in as character, cast as numeric
+gdp[, c(1:ncol(gdp))] <- sapply(gdp[, c(1:ncol(gdp))], as.numeric)
 
 #write.csv(gdp,"gdp.csv", row.names=F)
 colnames(gdp)[colnames(gdp)=="Country"] <- "country"
@@ -589,8 +601,7 @@ data <- data[which(data$iso_3=="AUS"
 
 
 #Write data file#
-write.csv(data, paste(final_data,"npv_all_years.csv",sep=""), row.names = FALSE)
-
+write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FALSE)
 
 #Create output tables and data for the graphs included in the report#####
 
@@ -633,8 +644,7 @@ colnames(data_2021_ranking)[colnames(data_2021_ranking)=="machines_rank"] <- "Ma
 colnames(data_2021_ranking)[colnames(data_2021_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
 colnames(data_2021_ranking)[colnames(data_2021_ranking)=="intangibles_rank"] <- "Intangibles Rank"
 
-write.csv(data_2021_ranking, paste(final_outputs,"npv_ranks_2021.csv",sep=""),row.names = FALSE)
-
+write.csv(data_2021_ranking, file.path(final_outputs_path, "npv_ranks_2021.csv"),row.names = FALSE)
 
 #Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2021"
 
@@ -649,7 +659,7 @@ data_weighted <- data_weighted[data_weighted$year>1999,]
 
 colnames(data_weighted)[colnames(data_weighted)=="n"] <- "country_count"
 
-write.csv(data_weighted, paste(final_outputs,"npv_weighted_timeseries.csv",sep=""), row.names = FALSE)
+write.csv(data_weighted, file.path(final_outputs_path, "npv_weighted_timeseries.csv"), row.names = FALSE)
 
 
 #Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2020"
@@ -685,8 +695,7 @@ oecd_rates <- merge(oecd_rates, gdp_long, by =c("country", "year"), all=FALSE)
 #Weigh corporate rates by GDP
 oecd_rates_weighted <- ddply(oecd_rates, .(year),summarize, weighted_average = weighted.mean(rate, gdp, na.rm = TRUE), average = mean(rate, na.rm = TRUE),n = length(rate[is.na(rate) == FALSE]))
 
-write.csv(oecd_rates_weighted, paste(final_outputs,"cit_rates_timeseries.csv",sep=""),row.names = FALSE)
-
+write.csv(oecd_rates_weighted, file.path(final_outputs_path, "cit_rates_timeseries.csv"),row.names = FALSE)
 
 #Data for map: "Net Present Value of Capital Allowances in Europe"
 
@@ -703,7 +712,7 @@ data_europe_2021 <- data_europe_2021[order(-data_europe_2021$waverage, data_euro
 #Add ranking
 data_europe_2021$rank <- rank(-data_europe_2021$`waverage`,ties.method = "min")
 
-write.csv(data_europe_2021, paste(final_outputs,"npv_europe.csv",sep=""),row.names = FALSE)
+write.csv(data_europe_2021, file.path(final_outputs_path, "npv_europe.csv"), row.names = FALSE)
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
@@ -722,12 +731,11 @@ data_eu27_2021 <- data_eu27_2021[order(-data_eu27_2021$waverage, data_eu27_2021$
 cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2021), waverage = c(0.673))
 data_eu27_2021 <- rbind(data_eu27_2021, cctb)
 
-write.csv(data_eu27_2021, paste(final_outputs,"eu_cctb.csv",sep=""),row.names = FALSE)
-
+write.csv(data_eu27_2021, file.path(final_outputs_path, "eu_cctb.csv"), row.names = FALSE)
 
 #Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2021"
 
 #Calculate averages by asset type
 average_assets <- ddply(data_oecd_2021, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
-write.csv(average_assets, paste(final_outputs,"asset_averages.csv",sep=""),row.names = FALSE)
+write.csv(average_assets, file.path(final_outputs_path, "asset_averages.csv"), row.names = FALSE)
