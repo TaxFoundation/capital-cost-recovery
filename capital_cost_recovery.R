@@ -670,7 +670,7 @@ data_europe_2022 <- data_europe_2022[order(-data_europe_2022$waverage, data_euro
 #Add ranking
 data_europe_2022$rank <- rank(-data_europe_2022$`waverage`,ties.method = "min")
 
-write.csv(data_europe_2022, paste(final_outputs,"npv_europe.csv",sep=""),row.names = FALSE)
+write.csv(data_europe_2022, file.path(final_outputs_path,"npv_europe.csv",sep=""),row.names = FALSE)
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
@@ -689,7 +689,7 @@ data_eu27_2022 <- data_eu27_2022[order(-data_eu27_2022$waverage, data_eu27_2022$
 cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2022), waverage = c(0.673))
 data_eu27_2022 <- rbind(data_eu27_2022, cctb)
 
-write.csv(data_eu27_2022, paste(final_outputs,"eu_cctb.csv",sep=""),row.names = FALSE)
+write.csv(data_eu27_2022, file.path(final_outputs_path,"eu_cctb.csv",sep=""),row.names = FALSE)
 
 
 #Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2022"
@@ -697,4 +697,4 @@ write.csv(data_eu27_2022, paste(final_outputs,"eu_cctb.csv",sep=""),row.names = 
 #Calculate averages by asset type
 average_assets <- ddply(data_oecd_2022, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
-write.csv(average_assets, paste(final_outputs,"asset_averages.csv",sep=""),row.names = FALSE)
+write.csv(average_assets, file.path(final_outputs_path,"asset_averages.csv",sep=""),row.names = FALSE)
