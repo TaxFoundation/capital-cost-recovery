@@ -333,8 +333,7 @@ data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_reco
 #In 2018, Latvia also moved to a cash-flow type business tax
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "LVA" & data$year >=2018,] <- 1
 
-#In fall 2018, Canada introduced full expensing for machinery
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2018,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2018,] * 0.00) + 1.00
+#In 2019, Canada introduced full expensing for machinery (For assets from Nov 20, 2018; do not count 2018 as reform being active)
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2019,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2019,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2020,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2020,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] * 0.00) + 1.00
