@@ -62,7 +62,8 @@ final_data_path <- file.path(CURDIR, "final-data")
 final_outputs_path <- file.path(CURDIR, "final-outputs")
 
 #Read in dataset containing depreciation data####
-data <- read.csv(paste(source_data_path, "/cost_recovery_data.csv",sep=""))
+data <- read.csv(file.path(source_data_path, "cost_recovery_data.csv"))
+# TODO: remove this line? read.csv(paste(source_data_path, "/cost_recovery_data.csv",sep=""))
 
 
 #Limit countries to OECD and EU countries
@@ -383,7 +384,7 @@ data <- subset(data, select = -c(weighted_machines, weighted_buildings, weighted
 #Import and match country names by ISO-3 codes#####
 
 #Read in country name file
-country_names <- read.csv(paste(source_data_path,"/country_codes.csv",sep=""))
+country_names <- read.csv(file.path(source_data_path, "country_codes.csv"))
 
 #Keep and rename selected columns
 country_names <- subset(country_names, select = c("official_name_en", "ISO3166.1.Alpha.3", "ISO3166.1.Alpha.2"))
@@ -670,7 +671,7 @@ data_europe_2022 <- data_europe_2022[order(-data_europe_2022$waverage, data_euro
 #Add ranking
 data_europe_2022$rank <- rank(-data_europe_2022$`waverage`,ties.method = "min")
 
-write.csv(data_europe_2022, file.path(final_outputs_path,"npv_europe.csv",sep=""),row.names = FALSE)
+write.csv(data_europe_2022, file.path(final_outputs_path,"npv_europe.csv"),row.names = FALSE)
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
@@ -689,7 +690,7 @@ data_eu27_2022 <- data_eu27_2022[order(-data_eu27_2022$waverage, data_eu27_2022$
 cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2022), waverage = c(0.673))
 data_eu27_2022 <- rbind(data_eu27_2022, cctb)
 
-write.csv(data_eu27_2022, file.path(final_outputs_path,"eu_cctb.csv",sep=""),row.names = FALSE)
+write.csv(data_eu27_2022, file.path(final_outputs_path,"eu_cctb.csv"),row.names = FALSE)
 
 
 #Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2022"
@@ -697,4 +698,4 @@ write.csv(data_eu27_2022, file.path(final_outputs_path,"eu_cctb.csv",sep=""),row
 #Calculate averages by asset type
 average_assets <- ddply(data_oecd_2022, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
-write.csv(average_assets, file.path(final_outputs_path,"asset_averages.csv",sep=""),row.names = FALSE)
+write.csv(average_assets, file.path(final_outputs_path,"asset_averages.csv"),row.names = FALSE)
