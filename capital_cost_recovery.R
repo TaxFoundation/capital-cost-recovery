@@ -63,7 +63,6 @@ final_outputs_path <- file.path(CURDIR, "final-outputs")
 
 #Read in dataset containing depreciation data####
 data <- read.csv(file.path(source_data_path, "cost_recovery_data.csv"))
-# TODO: remove this line? read.csv(paste(source_data_path, "/cost_recovery_data.csv",sep=""))
 
 
 #Limit countries to OECD and EU countries
