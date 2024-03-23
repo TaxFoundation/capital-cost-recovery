@@ -8,4 +8,5 @@ proj_dir <- here::here()
 source(file.path(proj_dir, "capital_cost_recovery.R"))
 
 # run all tests in test_dir
+proj_dir <- here::here()  # not sure why need to define again, but it works
 test_results <- test_dir(file.path(proj_dir, 'tests'), reporter="summary")

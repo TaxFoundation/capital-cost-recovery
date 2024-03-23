@@ -8,8 +8,10 @@ file_list = list("asset_averages", "cit_rates_timeseries", "eu_cctb",
                  "npv_europe", "npv_ranks_2022",
                  "npv_weighted_timeseries")
 for (file in file_list) {
-  test <- read.delim(file.path(proj_dir, "final-outputs", paste(file, ".csv", sep="")), sep=",", fill = TRUE)
-  expected <- read.delim(file.path(proj_dir, "final-outputs-expected", paste(file, ".csv", sep="")), sep=",", fill = TRUE)
+  file_test <- file.path(proj_dir, "final-outputs", paste(file, ".csv", sep=""))
+  test <- read.delim(file_test, sep=",", fill = TRUE)
+  file_expected <- file.path(proj_dir, "final-outputs-expected", paste(file, ".csv", sep=""))
+  expected <- read.delim(file_expected, sep=",", fill = TRUE)
   test_that(paste("Test", file, "results"),{
   expect_equal(test, expected)
   })
