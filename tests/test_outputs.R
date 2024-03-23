@@ -19,7 +19,7 @@ for (file in file_list) {
 
 # Test file in the final-data directory
 test_that(paste("Test final-data results"),{
-    test <- read.delim(subfile.path(proj_dir, "final-data", paste("npv_all_years", ".csv", sep="")), sep=",", fill = TRUE)
+    test <- read.delim(file.path(proj_dir, "final-data", paste("npv_all_years", ".csv", sep="")), sep=",", fill = TRUE)
     expected <- read.delim(file.path(proj_dir, "final-data-expected", paste("npv_all_years", ".csv", sep="")), sep=",", fill = TRUE)
     expect_equal(test, expected)
   })
