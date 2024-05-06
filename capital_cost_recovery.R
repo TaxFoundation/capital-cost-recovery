@@ -569,11 +569,11 @@ write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FAL
 
 #Create output tables and data for the graphs included in the report#####
 
-#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2022"
+#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2023"
 
 #Limit to OECD countries and 2023
-data_oecd_2022 <- subset(data, year==2023)
-data_oecd_2022 <- subset(data_oecd_2023, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
+data_oecd_2023 <- subset(data, year==2023)
+data_oecd_2023 <- subset(data_oecd_2023, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
 #Create rankings
 data_2023_ranking <- data_oecd_2023
@@ -632,7 +632,7 @@ write.csv(data_weighted, file.path(final_outputs_path, "npv_weighted_timeseries.
 
 
 
-#Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2022"
+#Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2023"
 
 #Read in dataset
 dataset_list <- get_datasets()
