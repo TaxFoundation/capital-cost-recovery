@@ -418,7 +418,7 @@ data <- merge(country_names, data, by='iso_3')
 #GDP Data####
 
 #Reading in GDP data
-gdp<- read_excel(file.path(source_data_path,"/RealGDPValues.xlsx"), range = "A14:BL234")
+gdp<- read_excel(file.path(source_data_path,"/RealGDPValues.xlsx"), range = "A13:BL233")
 
 #Drop rows that contain data of regions
 colnames(gdp)[colnames(gdp)=="Country"] <- "country"
@@ -642,6 +642,16 @@ oecd_rates <- ("TABLE_II1")
 #str(dstruc, max.level = 1)
 #dstruc$VAR_DESC
 #dstruc$CORP_TAX
+
+#Alternative approach, importing CSV from source data
+#oecd_rates <- read.csv(file.path(source_data_path, "corporate_rates.csv"))
+
+#Keep and rename selected columns
+#oecd_rates <- subset(oecd_rates, select = c(COU,YEA,Value))
+
+#colnames(oecd_rates)[colnames(oecd_rates)=="Value"] <- "rate"
+#colnames(oecd_rates)[colnames(oecd_rates)=="YEA"] <- "year"
+#colnames(oecd_rates)[colnames(oecd_rates)=="COU"] <- "iso_3"
 
 oecd_rates <- get_dataset("TABLE_II1", start_time = 2000)
 
