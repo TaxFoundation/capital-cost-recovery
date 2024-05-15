@@ -166,6 +166,7 @@ DBSL2 <- function(rate1,year1,rate2,year2,i){
 }
 
 #Italy's straight-line method for the years 1998-2007 for buildings and machinery (SLITA)
+#Special case of SL3. Deduct 3x rate in yr1, 2x in yr2, 1x rate until the last year.
 SLITA <- function(rate,year,i){
   pdv <- rate + (((rate*2)*(1+i))/i)*(1-(1^(2)/(1+i)^(2)))/(1+i) + ((rate*(1+i))/i)*(1-(1^(year-3)/(1+i)^(year-3)))/(1+i)^3
   return(pdv)
