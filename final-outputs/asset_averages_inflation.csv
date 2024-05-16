@@ -1,2 +1,4 @@
-"year","average_building","average_machines","average_intangibles"
-"2023",0.365891014633875,0.786357784245641,0.678551062973214
+year,inflation,average_building,average_machines,average_intangibles
+2023,2.0%,0.48025997,0.853268062,0.764176514
+2023,6.9%,0.365891015,0.786357784,0.678551063
+difference,,0.114368955,0.066910278,0.085625451
