@@ -203,6 +203,11 @@ CZK <- function(rate,i){
 
 #Define constant: Fixed discount rate#
 discount_rate = 0.075
+discount_rate_indexing = 0.055
+
+#Countries with inflation indexing
+indexing_list <- c("ISR","MEX")
+
 
 #Debug summarys#
 summary(data)
@@ -232,6 +237,8 @@ data[c('taxdepmachtimesl')][data$country == "USA" & data$year >1982 & data$year<
 #Calculate net present values for the different asset types####
 
 #machines_cost_recovery####
+
+
 
 #DB
 data$machines_cost_recovery[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)] <- DB(data$taxdeprmachdb[data$taxdepmachtype == "DB" & !is.na(data$taxdepmachtype)],discount_rate)
@@ -327,6 +334,59 @@ data$intangibles_cost_recovery[data$taxdepintangibltype == "SL2" & !is.na(data$t
                                                                                                             data$taxdepintangibltimedb[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
                                                                                                             data$taxdeprintangiblsl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)],
                                                                                                             data$taxdepintangibltimesl[data$taxdepintangibltype == "SL2" & !is.na(data$taxdepintangibltype)], discount_rate)
+
+# Create subset of the data for countries with inflation indexing
+indexing_data <- data[data$country %in% indexing_list, ]
+
+# Perform the same calculations for countries with inflation indexing, using the reduced discount rate
+# Machines Cost Recovery
+indexing_data$machines_cost_recovery[indexing_data$taxdepmachtype == "DB" & !is.na(indexing_data$taxdepmachtype)] <- 
+  DB(indexing_data$taxdeprmachdb[indexing_data$taxdepmachtype == "DB" & !is.na(indexing_data$taxdepmachtype)], discount_rate_indexing)
+
+indexing_data$machines_cost_recovery[indexing_data$taxdepmachtype == "SL" & !is.na(indexing_data$taxdepmachtype)] <- 
+  SL(indexing_data$taxdeprmachsl[indexing_data$taxdepmachtype == "SL" & !is.na(indexing_data$taxdepmachtype)], discount_rate_indexing)
+
+indexing_data$machines_cost_recovery[indexing_data$taxdepmachtype == "initialDB" & !is.na(indexing_data$taxdepmachtype)] <- 
+  initialDB(indexing_data$taxdeprmachdb[indexing_data$taxdepmachtype == "initialDB" & !is.na(indexing_data$taxdepmachtype)],
+            indexing_data$taxdeprmachsl[indexing_data$taxdepmachtype == "initialDB" & !is.na(indexing_data$taxdepmachtype)], discount_rate_indexing)
+
+indexing_data$machines_cost_recovery[indexing_data$taxdepmachtype == "DB or SL" & !is.na(indexing_data$taxdepmachtype)] <- 
+  DBSL2(indexing_data$taxdeprmachdb[indexing_data$taxdepmachtype == "DB or SL" & !is.na(indexing_data$taxdepmachtype)],
+        indexing_data$taxdepmachtimedb[indexing_data$taxdepmachtype == "DB or SL" & !is.na(indexing_data$taxdepmachtype)],
+        indexing_data$taxdeprmachsl[indexing_data$taxdepmachtype == "DB or SL" & !is.na(indexing_data$taxdepmachtype)],
+        indexing_data$taxdepmachtimesl[indexing_data$taxdepmachtype == "DB or SL" & !is.na(indexing_data$taxdepmachtype)], discount_rate_indexing)
+
+indexing_data$machines_cost_recovery[indexing_data$taxdepmachtype == "SL2" & !is.na(indexing_data$taxdepmachtype)] <- 
+  SL2(indexing_data$taxdeprmachdb[indexing_data$taxdepmachtype == "SL2" & !is.na(indexing_data$taxdepmachtype)],
+      indexing_data$taxdepmachtimedb[indexing_data$taxdepmachtype == "SL2" & !is.na(indexing_data$taxdepmachtype)],
+      indexing_data$taxdeprmachsl[indexing_data$taxdepmachtype == "SL2" & !is.na(indexing_data$taxdepmachtype)],
+      indexing_data$taxdepmachtimesl[indexing_data$taxdepmachtype == "SL2" & !is.na(indexing_data$taxdepmachtype)], discount_rate_indexing)
+
+indexing_data$machines_cost_recovery[indexing_data$taxdepmachtype == "SLITA" & !is.na(indexing_data$taxdepmachtype)] <- 
+  SL(indexing_data$taxdeprmachsl[indexing_data$taxdepmachtype == "SLITA" & !is.na(indexing_data$taxdepmachtype)], discount_rate_indexing)
+
+for (x in 1:nrow(indexing_data)) {
+  if (grepl("CZK", indexing_data$taxdepmachtype[x])) {
+    indexing_data$machines_cost_recovery[x] <- CZK(indexing_data$taxdeprmachdb[x], discount_rate_indexing)
+  }
+}
+
+# Repeat the same structure for `buildings_cost_recovery` and `intangibles_cost_recovery`
+# Buildings
+indexing_data$buildings_cost_recovery[indexing_data$taxdepbuildtype == "DB" & !is.na(indexing_data$taxdepbuildtype)] <- 
+  DB(indexing_data$taxdeprbuilddb[indexing_data$taxdepbuildtype == "DB" & !is.na(indexing_data$taxdepbuildtype)], discount_rate_indexing)
+
+# Add SL, initialDB, DB or SL, SL2, SLITA, CZK as above for buildings...
+
+# Intangibles
+indexing_data$intangibles_cost_recovery[indexing_data$taxdepintangibltype == "DB" & !is.na(indexing_data$taxdepintangibltype)] <- 
+  DB(indexing_data$taxdeprintangibldb[indexing_data$taxdepintangibltype == "DB" & !is.na(indexing_data$taxdepintangibltype)], discount_rate_indexing)
+
+# Add SL, initialDB, DB or SL, SL2, SLITA, CZK as above for intangibles...
+
+# Merge results for countries with inflation indexing back to the main data frame
+data[data$country %in% indexing_list, ] <- indexing_data
+
 
 #In 2000, Estonia moved to a cash-flow type business tax - all allowances need to be coded as 1
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "EST" & data$year >=2000,] <- 1
