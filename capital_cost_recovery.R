@@ -376,17 +376,63 @@ for (x in 1:nrow(indexing_data)) {
 indexing_data$buildings_cost_recovery[indexing_data$taxdepbuildtype == "DB" & !is.na(indexing_data$taxdepbuildtype)] <- 
   DB(indexing_data$taxdeprbuilddb[indexing_data$taxdepbuildtype == "DB" & !is.na(indexing_data$taxdepbuildtype)], discount_rate_indexing)
 
-# Add SL, initialDB, DB or SL, SL2, SLITA, CZK as above for buildings...
+indexing_data$buildings_cost_recovery[indexing_data$taxdepbuildtype == "SL" & !is.na(indexing_data$taxdepbuildtype)] <- 
+  SL(indexing_data$taxdeprbuildsl[indexing_data$taxdepbuildtype == "SL" & !is.na(indexing_data$taxdepbuildtype)], discount_rate_indexing)
+
+indexing_data$buildings_cost_recovery[indexing_data$taxdepbuildtype == "initialDB" & !is.na(indexing_data$taxdepbuildtype)] <- 
+  initialDB(indexing_data$taxdeprbuilddb[indexing_data$taxdepbuildtype == "initialDB" & !is.na(indexing_data$taxdepbuildtype)],
+            indexing_data$taxdeprbuildsl[indexing_data$taxdepbuildtype == "initialDB" & !is.na(indexing_data$taxdepbuildtype)], discount_rate_indexing)
+
+indexing_data$buildings_cost_recovery[indexing_data$taxdepbuildtype == "DB or SL" & !is.na(indexing_data$taxdepbuildtype)] <- 
+  DBSL2(indexing_data$taxdeprbuilddb[indexing_data$taxdepbuildtype == "DB or SL" & !is.na(indexing_data$taxdepbuildtype)],
+        indexing_data$taxdepbuildtimedb[indexing_data$taxdepbuildtype == "DB or SL" & !is.na(indexing_data$taxdepbuildtype)],
+        indexing_data$taxdeprbuildsl[indexing_data$taxdepbuildtype == "DB or SL" & !is.na(indexing_data$taxdepbuildtype)],
+        indexing_data$taxdepbuildtimesl[indexing_data$taxdepbuildtype == "DB or SL" & !is.na(indexing_data$taxdepbuildtype)], discount_rate_indexing)
+
+indexing_data$buildings_cost_recovery[indexing_data$taxdepbuildtype == "SL2" & !is.na(indexing_data$taxdepbuildtype)] <- 
+  SL2(indexing_data$taxdeprbuilddb[indexing_data$taxdepbuildtype == "SL2" & !is.na(indexing_data$taxdepbuildtype)],
+      indexing_data$taxdepbuildtimedb[indexing_data$taxdepbuildtype == "SL2" & !is.na(indexing_data$taxdepbuildtype)],
+      indexing_data$taxdeprbuildsl[indexing_data$taxdepbuildtype == "SL2" & !is.na(indexing_data$taxdepbuildtype)],
+      indexing_data$taxdepbuildtimesl[indexing_data$taxdepbuildtype == "SL2" & !is.na(indexing_data$taxdepbuildtype)], discount_rate_indexing)
+
+indexing_data$buildings_cost_recovery[indexing_data$taxdepbuildtype == "SLITA" & !is.na(indexing_data$taxdepbuildtype)] <- 
+  SL(indexing_data$taxdeprbuildsl[indexing_data$taxdepbuildtype == "SLITA" & !is.na(indexing_data$taxdepbuildtype)], discount_rate_indexing)
+
+for (x in 1:nrow(indexing_data)) {
+  if (grepl("CZK", indexing_data$taxdepbuildtype[x])) {
+    indexing_data$buildings_cost_recovery[x] <- CZK(indexing_data$taxdeprbuilddb[x], discount_rate_indexing)
+  }
+}
 
 # Intangibles
 indexing_data$intangibles_cost_recovery[indexing_data$taxdepintangibltype == "DB" & !is.na(indexing_data$taxdepintangibltype)] <- 
   DB(indexing_data$taxdeprintangibldb[indexing_data$taxdepintangibltype == "DB" & !is.na(indexing_data$taxdepintangibltype)], discount_rate_indexing)
 
-# Add SL, initialDB, DB or SL, SL2, SLITA, CZK as above for intangibles...
+indexing_data$intangibles_cost_recovery[indexing_data$taxdepintangibltype == "SL" & !is.na(indexing_data$taxdepintangibltype)] <- 
+  SL(indexing_data$taxdeprintangiblsl[indexing_data$taxdepintangibltype == "SL" & !is.na(indexing_data$taxdepintangibltype)], discount_rate_indexing)
+
+indexing_data$intangibles_cost_recovery[indexing_data$taxdepintangibltype == "initialDB" & !is.na(indexing_data$taxdepintangibltype)] <- 
+  initialDB(indexing_data$taxdeprintangibldb[indexing_data$taxdepintangibltype == "initialDB" & !is.na(indexing_data$taxdepintangibltype)],
+            indexing_data$taxdeprintangiblsl[indexing_data$taxdepintangibltype == "initialDB" & !is.na(indexing_data$taxdepintangibltype)], discount_rate_indexing)
+
+indexing_data$intangibles_cost_recovery[indexing_data$taxdepintangibltype == "DB or SL" & !is.na(indexing_data$taxdepintangibltype)] <- 
+  DBSL2(indexing_data$taxdeprintangibldb[indexing_data$taxdepintangibltype == "DB or SL" & !is.na(indexing_data$taxdepintangibltype)],
+        indexing_data$taxdepintangibltimedb[indexing_data$taxdepintangibltype == "DB or SL" & !is.na(indexing_data$taxdepintangibltype)],
+        indexing_data$taxdeprintangiblsl[indexing_data$taxdepintangibltype == "DB or SL" & !is.na(indexing_data$taxdepintangibltype)],
+        indexing_data$taxdepintangibltimesl[indexing_data$taxdepintangibltype == "DB or SL" & !is.na(indexing_data$taxdepintangibltype)], discount_rate_indexing)
+
+indexing_data$intangibles_cost_recovery[indexing_data$taxdepintangibltype == "SL2" & !is.na(indexing_data$taxdepintangibltype)] <- 
+  SL2(indexing_data$taxdeprintangibldb[indexing_data$taxdepintangibltype == "SL2" & !is.na(indexing_data$taxdepintangibltype)],
+      indexing_data$taxdepintangibltimedb[indexing_data$taxdepintangibltype == "SL2" & !is.na(indexing_data$taxdepintangibltype)],
+      indexing_data$taxdeprintangiblsl[indexing_data$taxdepintangibltype == "SL2" & !is.na(indexing_data$taxdepintangibltype)],
+      indexing_data$taxdepintangibltimesl[indexing_data$taxdepintangibltype == "SL2" & !is.na(indexing_data$taxdepintangibltype)], discount_rate_indexing)
+
+indexing_data$intangibles_cost_recovery[indexing_data$taxdepintangibltype == "SLITA" & !is.na(indexing_data$taxdepintangibltype)] <- 
+  SL(indexing_data$taxdeprintangiblsl[indexing_data$taxdepintangibltype == "SLITA" & !is.na(indexing_data$taxdepintangibltype)], discount_rate_indexing)
+
 
 # Merge results for countries with inflation indexing back to the main data frame
 data[data$country %in% indexing_list, ] <- indexing_data
-
 
 #In 2000, Estonia moved to a cash-flow type business tax - all allowances need to be coded as 1
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "EST" & data$year >=2000,] <- 1
@@ -400,10 +446,10 @@ data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2020,] <-
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2022,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2023,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2023,] * 0.00) + 1.00
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] * 0.10) + 0.90
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] * 0.20) + 0.80
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] * 0.30) + 0.70
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2027,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2027,] * 0.40) + 0.60
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] * 0.25) + 0.75
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] * 0.25) + 0.75
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] * 0.45) + 0.55
+data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2027,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2027,] * 0.45) + 0.55
 
 #In 2020, Chile introduced full expensing
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "CHL" & data$year ==2020,] <- 1
@@ -479,7 +525,7 @@ data <- merge(country_names, data, by='iso_3')
 #GDP Data####
 
 #Reading in GDP data
-gdp<- read_excel(file.path(source_data_path,"/RealGDPValues.xlsx"), range = "A13:BL233")
+gdp<- read_excel(file.path(source_data_path,"/RealGDPValues.xlsx"), range = "A13:BN233")
 
 #Drop rows that contain data of regions
 colnames(gdp)[colnames(gdp)=="Country"] <- "country"
@@ -531,6 +577,8 @@ gdp <- subset(gdp, gdp$country != "Africa"
 gdp$country[gdp$country == "Democratic Republic of Congo"] <- "Democratic Republic of the Congo"
 gdp$country[gdp$country == "Republic of Congo"] <- "Republic of the Congo"
 gdp$country[gdp$country == "Swaziland/Eswatini"] <- "Swaziland"
+gdp$country[gdp$country == "Côte d'Ivoire"] <- "Cote d'Ivoire"
+gdp$country[gdp$country == "São Tomé and Principe"] <- "Sao Tome and Principe"
 
 #write.csv(gdp,"gdp.csv", row.names=F)
 
@@ -543,7 +591,7 @@ gdp$country[gdp$country == "Czech Republic"] <- "Czechia"
 gdp$country[gdp$country == "Iran"] <- "Iran (Islamic Republic of)"
 gdp$country[gdp$country == "Korea"] <- "Republic of Korea"
 gdp$country[gdp$country == "Laos"] <- "Lao People's Democratic Republic"
-gdp$country[gdp$country == "Macedonia"] <- "The former Yugoslav Republic of Macedonia"
+gdp$country[gdp$country == "Macedonia, North"] <- "The former Yugoslav Republic of Macedonia"
 gdp$country[gdp$country == "Moldova"] <- "Republic of Moldova"
 gdp$country[gdp$country == "Republic of the Congo"] <- "Congo"
 gdp$country[gdp$country == "Russia"] <- "Russian Federation"
@@ -630,50 +678,50 @@ write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FAL
 
 #Create output tables and data for the graphs included in the report#####
 
-#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2023"
+#Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2024"
 
-#Limit to OECD countries and 2023
-data_oecd_2023 <- subset(data, year==2023)
-data_oecd_2023 <- subset(data_oecd_2023, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
+#Limit to OECD countries and 2024
+data_oecd_2024 <- subset(data, year==2024)
+data_oecd_2024 <- subset(data_oecd_2024, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
 
 #Create rankings
-data_2023_ranking <- data_oecd_2023
+data_2024_ranking <- data_oecd_2024
 
-data_2023_ranking$buildings_rank <- rank(-data_2023_ranking$`buildings_cost_recovery`,ties.method = "min")
-data_2023_ranking$machines_rank <- rank(-data_2023_ranking$`machines_cost_recovery`,ties.method = "min")
-data_2023_ranking$intangibles_rank <- rank(-data_2023_ranking$`intangibles_cost_recovery`,ties.method = "min")
+data_2024_ranking$buildings_rank <- rank(-data_2024_ranking$`buildings_cost_recovery`,ties.method = "min")
+data_2024_ranking$machines_rank <- rank(-data_2024_ranking$`machines_cost_recovery`,ties.method = "min")
+data_2024_ranking$intangibles_rank <- rank(-data_2024_ranking$`intangibles_cost_recovery`,ties.method = "min")
 
-data_2023_ranking$waverage_rank <- rank(-data_2023_ranking$`waverage`, ties.method = "min")
+data_2024_ranking$waverage_rank <- rank(-data_2024_ranking$`waverage`, ties.method = "min")
 
-data_2023_ranking <- subset(data_2023_ranking, select = -c(year, iso_3, average, gdp))
+data_2024_ranking <- subset(data_2024_ranking, select = -c(year, iso_3, average, gdp))
 
 #Order columns and sort data
-data_2023_ranking <- data_2023_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
+data_2024_ranking <- data_2024_ranking[c("country", "waverage_rank", "waverage", "buildings_rank", "buildings_cost_recovery", "machines_rank", "machines_cost_recovery", "intangibles_rank", "intangibles_cost_recovery")]
 
-data_2023_ranking <- data_2023_ranking[order(-data_2023_ranking$waverage, data_2023_ranking$country),]
+data_2024_ranking <- data_2024_ranking[order(-data_2024_ranking$waverage, data_2024_ranking$country),]
 
 #Round digits
-data_2023_ranking$waverage <- round(data_2023_ranking$waverage, digits=3)
-data_2023_ranking$buildings_cost_recovery <- round(data_2023_ranking$buildings_cost_recovery, digits=3)
-data_2023_ranking$machines_cost_recovery <- round(data_2023_ranking$machines_cost_recovery, digits=3)
-data_2023_ranking$intangibles_cost_recovery <- round(data_2023_ranking$intangibles_cost_recovery, digits=3)
+data_2024_ranking$waverage <- round(data_2024_ranking$waverage, digits=3)
+data_2024_ranking$buildings_cost_recovery <- round(data_2024_ranking$buildings_cost_recovery, digits=3)
+data_2024_ranking$machines_cost_recovery <- round(data_2024_ranking$machines_cost_recovery, digits=3)
+data_2024_ranking$intangibles_cost_recovery <- round(data_2024_ranking$intangibles_cost_recovery, digits=3)
 
 #Rename column headers
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="country"] <- "Country"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="waverage"] <- "Weighted Average Allowance"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="waverage_rank"] <- "Weighted Average Rank"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="buildings_cost_recovery"] <- "Buildings Allowance"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="buildings_rank"] <- "Buildings Rank"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="machines_cost_recovery"] <- "Machinery Allowance"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="machines_rank"] <- "Machinery Rank"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
-colnames(data_2023_ranking)[colnames(data_2023_ranking)=="intangibles_rank"] <- "Intangibles Rank"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="country"] <- "Country"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="waverage"] <- "Weighted Average Allowance"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="waverage_rank"] <- "Weighted Average Rank"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="buildings_cost_recovery"] <- "Buildings Allowance"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="buildings_rank"] <- "Buildings Rank"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="machines_cost_recovery"] <- "Machinery Allowance"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="machines_rank"] <- "Machinery Rank"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="intangibles_cost_recovery"] <- "Intangibles Allowance"
+colnames(data_2024_ranking)[colnames(data_2024_ranking)=="intangibles_rank"] <- "Intangibles Rank"
 
-write.csv(data_2023_ranking, file.path(final_outputs_path, "npv_ranks_2023.csv"),row.names = FALSE)
+write.csv(data_2024_ranking, file.path(final_outputs_path, "npv_ranks_2024.csv"),row.names = FALSE)
 
 
 
-#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2023"
+#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2024"
 
 #Limit to OECD countries
 data_oecd_all_years <- subset(data, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
@@ -693,12 +741,12 @@ write.csv(data_weighted, file.path(final_outputs_path, "npv_weighted_timeseries.
 
 
 
-#Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2023"
+#Data for chart: "Statutory Weighted and Unweighted Combined Corporate Income Tax Rates in the OECD, 2000-2024"
 
 #Read in dataset
-dataset_list <- get_datasets()
+#dataset_list <- get_datasets()
 #search_dataset("Corporate", data= dataset_list)
-oecd_rates <- ("TABLE_II1")
+#oecd_rates <- ("TABLE_II1")
 #dstruc <- get_data_structure(oecd_rates)
 #str(dstruc, max.level = 1)
 #dstruc$VAR_DESC
@@ -714,15 +762,19 @@ oecd_rates <- ("TABLE_II1")
 #colnames(oecd_rates)[colnames(oecd_rates)=="YEA"] <- "year"
 #colnames(oecd_rates)[colnames(oecd_rates)=="COU"] <- "iso_3"
 
-oecd_rates <- get_dataset("TABLE_II1", start_time = 2000)
+url = "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_TAX_CIT@DF_CIT,1.0/AUS+AUT+BEL+CAN+CHL+COL+CRI+CZE+DNK+EST+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ISR+ITA+JPN+KOR+LVA+LTU+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+SVN+ESP+SWE+CHE+TUR+GBR+USA.A.CIT_C.ST..S13+S1311..?startPeriod=2000&endPeriod=2024&dimensionAtObservation=AllDimensions&format=csvfilewithlabels"
+oecd_rates<-read.csv(url)
+
+#oecd_rates <- get_dataset("TABLE_II1", start_time = 2000)
 
 #Keep and rename selected columns
-oecd_rates <- subset(oecd_rates, oecd_rates$CORP_TAX=="COMB_CIT_RATE")
-oecd_rates <- subset(oecd_rates, select = -c(CORP_TAX,TIME_FORMAT))
+#oecd_rates <- subset(oecd_rates, oecd_rates$CORP_TAX=="COMB_CIT_RATE")
+oecd_rates <- subset(oecd_rates, select = c(REF_AREA,TIME_PERIOD, OBS_VALUE))
+#oecd_rates <- subset(oecd_rates, select = -c(CORP_TAX,TIME_FORMAT))
 
-colnames(oecd_rates)[colnames(oecd_rates)=="ObsValue"] <- "rate"
-colnames(oecd_rates)[colnames(oecd_rates)=="Time"] <- "year"
-colnames(oecd_rates)[colnames(oecd_rates)=="COU"] <- "iso_3"
+colnames(oecd_rates)[colnames(oecd_rates)=="OBS_VALUE"] <- "rate"
+colnames(oecd_rates)[colnames(oecd_rates)=="TIME_PERIOD"] <- "year"
+colnames(oecd_rates)[colnames(oecd_rates)=="REF_AREA"] <- "iso_3"
 
 #Add country names
 oecd_rates <- merge(oecd_rates, country_names, by='iso_3')
@@ -742,44 +794,44 @@ write.csv(oecd_rates_weighted, file.path(final_outputs_path, "cit_rates_timeseri
 
 #Data for map: "Net Present Value of Capital Allowances in Europe"
 
-#Keep European countries and the year 2023
-data_europe_2023 <- subset(data, year==2023)
-data_europe_2023 <- subset(data_europe_2023, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
+#Keep European countries and the year 2024
+data_europe_2024 <- subset(data, year==2024)
+data_europe_2024 <- subset(data_europe_2024, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "USA")
 
 #Drop columns that are not needed
-data_europe_2023 <- subset(data_europe_2023, select = c(iso_3, country, year, waverage))
+data_europe_2024 <- subset(data_europe_2024, select = c(iso_3, country, year, waverage))
 
 #Sort data
-data_europe_2023 <- data_europe_2023[order(-data_europe_2023$waverage, data_europe_2023$country),]
+data_europe_2024 <- data_europe_2024[order(-data_europe_2024$waverage, data_europe_2024$country),]
 
 #Add ranking
-data_europe_2023$rank <- rank(-data_europe_2023$`waverage`,ties.method = "min")
+data_europe_2024$rank <- rank(-data_europe_2024$`waverage`,ties.method = "min")
 
-write.csv(data_europe_2023, file.path(final_outputs_path,"npv_europe.csv"),row.names = FALSE)
+write.csv(data_europe_2024, file.path(final_outputs_path,"npv_europe.csv"),row.names = FALSE)
 
 
 #Data for chart: "Net Present Value of Capital Allowances in the EU compared to CCTB"
 
-#Limit to EU countries and 2023
-data_eu27_2023 <- subset(data, year==2023)
-data_eu27_2023 <- subset(data_eu27_2023, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI"& iso_3 != "ISL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "NOR" & iso_3 != "CHE" & iso_3 != "TUR" & iso_3 != "GBR" & iso_3 != "USA")
+#Limit to EU countries and 2024
+#data_eu27_2024 <- subset(data, year==2024)
+#data_eu27_2024 <- subset(data_eu27_2024, subset = iso_3 != "AUS" & iso_3 != "CAN" & iso_3 != "CHL" & iso_3 != "COL" & iso_3 != "CRI"& iso_3 != "ISL" & iso_3 != "ISR" & iso_3 != "JPN" & iso_3 != "KOR" & iso_3 != "MEX" & iso_3 != "NZL" & iso_3 != "NOR" & iso_3 != "CHE" & iso_3 != "TUR" & iso_3 != "GBR" & iso_3 != "USA")
 
 #Drop columns that are not needed
-data_eu27_2023 <- subset(data_eu27_2023, select = c(iso_3, country, year, waverage))
+#data_eu27_2024 <- subset(data_eu27_2024, select = c(iso_3, country, year, waverage))
 
 #Sort data
-data_eu27_2023 <- data_eu27_2023[order(-data_eu27_2023$waverage, data_eu27_2023$country),]
+#data_eu27_2024 <- data_eu27_2024[order(-data_eu27_2024$waverage, data_eu27_2024$country),]
 
 #Add weighted average of capital allowances under CCTB
-cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2023), waverage = c(0.673))
-data_eu27_2023 <- rbind(data_eu27_2023, cctb)
+#cctb <- data.frame(iso_3 = c("CCTB"), country = c("CCTB"), year = c(2024), waverage = c(0.673))
+#data_eu27_2024 <- rbind(data_eu27_2024, cctb)
 
-write.csv(data_eu27_2023, file.path(final_outputs_path,"eu_cctb.csv"),row.names = FALSE)
+#write.csv(data_eu27_2024, file.path(final_outputs_path,"eu_cctb.csv"),row.names = FALSE)
 
 
-#Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2023"
+#Data for chart: "Net Present Value of Capital Allowances by Asset Type in the OECD, 2024"
 
 #Calculate averages by asset type
-average_assets <- ddply(data_oecd_2023, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
+average_assets <- ddply(data_oecd_2024, .(year),summarize, average_building = mean(buildings_cost_recovery, na.rm = TRUE), average_machines = mean(machines_cost_recovery, na.rm = TRUE), average_intangibles = mean(intangibles_cost_recovery, na.rm = TRUE))
 
 write.csv(average_assets, file.path(final_outputs_path,"asset_averages.csv"),row.names = FALSE)
