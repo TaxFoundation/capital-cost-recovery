@@ -446,10 +446,7 @@ data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2020,] <-
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2021,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2022,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2023,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2023,] * 0.00) + 1.00
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2024,] * 0.25) + 0.75
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2025,] * 0.25) + 0.75
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2026,] * 0.45) + 0.55
-data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2027,] <- (data[c('machines_cost_recovery')][data$country == "CAN" & data$year == 2027,] * 0.45) + 0.55
+
 
 #In 2020, Chile introduced full expensing
 data[c('intangibles_cost_recovery','machines_cost_recovery','buildings_cost_recovery')][data$country == "CHL" & data$year ==2020,] <- 1
