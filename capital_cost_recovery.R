@@ -474,11 +474,11 @@ data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2021,] <-
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2022,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2022,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2023,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2023,] * 0.20) + 0.80
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2024,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2024,] * 0.40) + 0.60
-data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2025,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2025,] * 0.00) + 1
-data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2026,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2026,] * 0.00) + 1
-data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2027,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2027,] * 0.00) + 1
-data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2028,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2028,] * 0.00) + 1
-data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2029,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2029,] * 0.00) + 1
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2025,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2025,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2026,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2026,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2027,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2027,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2028,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2028,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2029,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2029,] * 0.00) + 1.00
 
 #Adjust UK data to include super-deduction and permanent full expensing
 data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] * 0.00) + 1.30
