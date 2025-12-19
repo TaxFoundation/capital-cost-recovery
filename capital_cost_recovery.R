@@ -206,7 +206,7 @@ discount_rate = 0.075
 discount_rate_indexing = 0.055
 
 #Countries with inflation indexing
-indexing_list <- c("ISR","MEX")
+indexing_list <- c("CHL","ISR","MEX")
 
 
 #Debug summarys#
