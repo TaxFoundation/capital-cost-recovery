@@ -599,8 +599,7 @@ colnames(gdp)[colnames(gdp)=="Year"] <- "year"
 colnames(gdp)[colnames(gdp)=="Value"] <- "gdp"
 #gdp$gdp <- as.numeric(gdp$gdp)
 gdp <- gdp [, -3]
-
-write.csv(gdp, file.path(source_data_path, "gdp.csv"), row.names = FALSE)
+#write.csv(gdp, file.path(source_data_path, "gdp.csv"), row.names = FALSE)
 
 
 #Merge net present value data with GDP data
@@ -706,8 +705,6 @@ colnames(data_2025_ranking)[colnames(data_2025_ranking)=="intangibles_cost_recov
 colnames(data_2025_ranking)[colnames(data_2025_ranking)=="intangibles_rank"] <- "Intangibles Rank"
 
 write.csv(data_2025_ranking, file.path(final_outputs_path, "npv_ranks_2025.csv"),row.names = FALSE)
-
-
 
 #Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2025"
 
