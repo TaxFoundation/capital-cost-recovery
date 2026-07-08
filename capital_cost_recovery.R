@@ -674,11 +674,14 @@ data_oecd_2025 <- subset(data_oecd_2025, subset = iso_3 != "BGR" & iso_3 != "HRV
 #Create rankings
 data_2025_ranking <- data_oecd_2025
 
-data_2025_ranking$buildings_rank <- rank(-data_2025_ranking$`buildings_cost_recovery`,ties.method = "min")
-data_2025_ranking$machines_rank <- rank(-data_2025_ranking$`machines_cost_recovery`,ties.method = "min")
-data_2025_ranking$intangibles_rank <- rank(-data_2025_ranking$`intangibles_cost_recovery`,ties.method = "min")
+#data_2025_ranking$buildings_rank <- rank(-data_2025_ranking$`buildings_cost_recovery`,ties.method = "min")
 
-data_2025_ranking$waverage_rank <- rank(-data_2025_ranking$`waverage`, ties.method = "min")
+
+data_2025_ranking$buildings_rank <- rank(-round(data_2025_ranking$buildings_cost_recovery, 4),ties.method = "min")
+data_2025_ranking$machines_rank <- rank(-round(data_2025_ranking$`machines_cost_recovery`,4),ties.method = "min")
+data_2025_ranking$intangibles_rank <- rank(-round(data_2025_ranking$`intangibles_cost_recovery`,4),ties.method = "min")
+
+data_2025_ranking$waverage_rank <- rank(-round(data_2025_ranking$`waverage`,4), ties.method = "min")
 
 data_2025_ranking <- subset(data_2025_ranking, select = -c(year, iso_3, average, gdp))
 
@@ -790,7 +793,7 @@ data_europe_2025 <- subset(data_europe_2025, select = c(iso_3, country, year, wa
 data_europe_2025 <- data_europe_2025[order(-data_europe_2025$waverage, data_europe_2025$country),]
 
 #Add ranking
-data_europe_2025$rank <- rank(-data_europe_2025$`waverage`,ties.method = "min")
+data_europe_2025$rank <- rank(-round(data_europe_2025$`waverage`,4),ties.method = "min")
 
 write.csv(data_europe_2025, file.path(final_outputs_path,"npv_europe.csv"),row.names = FALSE)
 

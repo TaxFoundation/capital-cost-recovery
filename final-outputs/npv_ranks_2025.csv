@@ -1,7 +1,7 @@
 "Country","Weighted Average Rank","Weighted Average Allowance","Buildings Rank","Buildings Allowance","Machinery Rank","Machinery Allowance","Intangibles Rank","Intangibles Allowance"
-"Estonia",1,1,2,1,2,1,2,1
-"Latvia",1,1,2,1,2,1,2,1
-"United States",3,0.945,1,1,2,1,34,0.633
+"Estonia",1,1,1,1,1,1,1,1
+"Latvia",1,1,1,1,1,1,1,1
+"United States",3,0.945,1,1,1,1,34,0.633
 "Lithuania",4,0.882,4,0.827,8,0.905,4,0.966
 "Canada",5,0.85,5,0.636,1,1,1,1
 "Italy",6,0.763,8,0.577,17,0.87,5,0.965
@@ -14,7 +14,7 @@
 "Finland",13,0.734,16,0.519,6,0.935,24,0.738
 "Czech Republic",14,0.733,15,0.543,14,0.874,16,0.841
 "Mexico",15,0.727,6,0.63,30,0.795,22,0.795
-"United Kingdom",16,0.724,26,0.391,2,1,18,0.827
+"United Kingdom",16,0.724,26,0.391,1,1,18,0.827
 "Israel",17,0.717,22,0.479,9,0.901,17,0.835
 "Luxembourg",18,0.711,17,0.479,16,0.873,7,0.87
 "Sweden",19,0.703,17,0.479,21,0.86,15,0.86
