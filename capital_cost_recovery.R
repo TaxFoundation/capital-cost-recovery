@@ -465,6 +465,7 @@ data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2026,] <-
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2027,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2027,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2028,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2028,] * 0.00) + 1.00
 data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2029,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2029,] * 0.00) + 1.00
+data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2030,] <- (data[c('machines_cost_recovery')][data$country == "USA" & data$year == 2030,] * 0.00) + 1.00
 
 #Adjust UK data to include super-deduction and permanent full expensing
 data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] <- (data[c('machines_cost_recovery')][data$country == "GBR" & data$year == 2021,] * 0.00) + 1.30
@@ -709,7 +710,7 @@ colnames(data_2025_ranking)[colnames(data_2025_ranking)=="intangibles_rank"] <- 
 
 write.csv(data_2025_ranking, file.path(final_outputs_path, "npv_ranks_2025.csv"),row.names = FALSE)
 
-#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2025"
+#Data for chart: "Net Present Value of Capital Allowances in the OECD, 2000-2030"
 
 #Limit to OECD countries
 data_oecd_all_years <- subset(data, subset = iso_3 != "BGR" & iso_3 != "HRV" & iso_3 != "CYP" & iso_3 != "MLT" & iso_3 != "ROU")
