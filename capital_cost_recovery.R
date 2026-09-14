@@ -664,6 +664,60 @@ data <- data[which(data$iso_3=="AUS"
 #Write data file#
 write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FALSE)
 
+
+#Scenario: Canada immediate expensing for machinery and buildings##############
+# Compares Canada's current-law trajectory against a reform in which Canada
+# grants immediate expensing (net present value of capital allowances = 1.0)
+# for MACHINERY and BUILDINGS from 2026 onward. Intangibles are left on
+# current law. Produces a wide comparison table (2017-2034) with the net
+# present value by asset and the capital-stock-weighted average under both
+# scenarios. Output: final-outputs/canada_expensing_scenario.csv
+
+#Asset weights (capital-stock shares, Devereux 2012); identical to the weights
+#used to build 'waverage' above (machines .4391081, buildings .4116638,
+#intangibles .1492281)
+w_machines    <- 0.4391081
+w_buildings   <- 0.4116638
+w_intangibles <- 0.1492281
+
+#First year the reform is in effect
+reform_start_year <- 2026
+
+#Current-law net present values for Canada, 2017-2034
+canada <- subset(data, iso_3 == "CAN" & year >= 2017 & year <= 2034,
+                 select = c(year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
+canada <- canada[order(canada$year), ]
+
+#(ii) Current trajectory
+buildings_currentlaw   <- canada$buildings_cost_recovery
+machines_currentlaw    <- canada$machines_cost_recovery
+intangibles_currentlaw <- canada$intangibles_cost_recovery
+waverage_currentlaw    <- w_machines*machines_currentlaw + w_buildings*buildings_currentlaw + w_intangibles*intangibles_currentlaw
+
+#(i) Reform: machinery and buildings expensed (NPV = 1) from reform_start_year on; intangibles unchanged
+reform_on          <- canada$year >= reform_start_year
+buildings_reform   <- ifelse(reform_on, 1, buildings_currentlaw)
+machines_reform    <- ifelse(reform_on, 1, machines_currentlaw)
+intangibles_reform <- intangibles_currentlaw
+waverage_reform    <- w_machines*machines_reform + w_buildings*buildings_reform + w_intangibles*intangibles_reform
+
+#Assemble wide comparison table and write it out
+canada_scenario <- data.frame(
+  year                   = canada$year,
+  buildings_currentlaw   = buildings_currentlaw,
+  machines_currentlaw    = machines_currentlaw,
+  intangibles_currentlaw = intangibles_currentlaw,
+  waverage_currentlaw    = waverage_currentlaw,
+  buildings_reform       = buildings_reform,
+  machines_reform        = machines_reform,
+  intangibles_reform     = intangibles_reform,
+  waverage_reform        = waverage_reform,
+  waverage_diff          = waverage_reform - waverage_currentlaw
+)
+
+write.csv(canada_scenario, file.path(final_outputs_path, "canada_expensing_scenario.csv"), row.names = FALSE)
+
+
 #Create output tables and data for the graphs included in the report#####
 
 #Main overview table: "Net Present Value of Capital Allowances in OECD Countries, 2025"
