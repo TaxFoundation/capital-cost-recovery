@@ -101,9 +101,9 @@ Location of **output tables** that are included in the publication or needed to 
 
 - `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2025.
 
-- `canada_expensing_scenario.csv` Table comparing, for Canada from 2017 to 2034, the net present value of capital allowances by asset type and the capital-stock-weighted average under (ii) the current-law trajectory versus (i) a reform in which Canada grants immediate expensing (net present value = 1.0) for machinery and buildings from 2026 onward, with intangibles left on current law. Produced by the scenario block in `capital_cost_recovery.R`.
+- `canada_expensing_scenario.csv` Table of Canada's net present value of capital allowances by asset type and the capital-stock-weighted average, 2017 to 2034, for the default (no-reform) trajectory and for a reform granting immediate expensing (net present value = 1.0) for machinery and buildings from 2026 onward (intangibles unchanged). Produced by the scenario block in `capital_cost_recovery.R`.
 
-- `canada_expensing_rankings_2026_2030.xlsx` Workbook giving the annual OECD rankings (2026 to 2030) of the net present value of capital allowances with Canada under the current-law trajectory versus the immediate-expensing reform. Weighted averages are computed from the asset net present values and rankings from live `RANK` formulas, so the calculation is fully transparent. Generated from `final-data/npv_all_years.csv` by `canada_expensing_rankings.ps1` (requires Windows and Excel).
+- `canada_expensing_rankings_2026.csv` and `canada_expensing_rankings_2030.csv` Tables ranking the 38 OECD countries by the weighted-average net present value of capital allowances in 2026 and 2030 respectively, giving each country's weighted average and rank without the reform and with Canada's machinery-and-buildings immediate expensing. Produced by the scenario block in `capital_cost_recovery.R`.
 
 
 ## Contact Information

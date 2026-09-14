@@ -671,51 +671,78 @@ write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FAL
 
 
 #Scenario: Canada immediate expensing for machinery and buildings##############
-# Compares Canada's current-law trajectory against a reform in which Canada
-# grants immediate expensing (net present value of capital allowances = 1.0)
-# for MACHINERY and BUILDINGS from 2026 onward. Intangibles are left on
-# current law. Produces a wide comparison table (2017-2034) with the net
-# present value by asset and the capital-stock-weighted average under both
-# scenarios. Output: final-outputs/canada_expensing_scenario.csv
-
-#Uses the asset weights (w_machines / w_buildings / w_intangibles) defined once above
+# Models a reform in which Canada grants immediate expensing (net present value
+# of capital allowances = 1.0) for MACHINERY and BUILDINGS from 2026 onward,
+# with intangibles unchanged, against the default (no-reform) trajectory.
+# Uses the asset weights (w_machines / w_buildings / w_intangibles) defined above.
+# Outputs:
+#  - final-outputs/canada_expensing_scenario.csv        NPV by asset + weighted
+#      average for Canada, 2017-2034, default and reform
+#  - final-outputs/canada_expensing_rankings_2026.csv
+#  - final-outputs/canada_expensing_rankings_2030.csv   OECD rankings without vs.
+#      with the reform, 2026 and 2030
 
 #First year the reform is in effect
 reform_start_year <- 2026
 
-#Current-law net present values for Canada, 2017-2034
+## Canada NPV by asset and weighted average, 2017-2034 -------------------------
 canada <- subset(data, iso_3 == "CAN" & year >= 2017 & year <= 2034,
                  select = c(year, buildings_cost_recovery, machines_cost_recovery, intangibles_cost_recovery))
 canada <- canada[order(canada$year), ]
 
-#(ii) Current trajectory
-buildings_currentlaw   <- canada$buildings_cost_recovery
-machines_currentlaw    <- canada$machines_cost_recovery
-intangibles_currentlaw <- canada$intangibles_cost_recovery
-waverage_currentlaw    <- w_machines*machines_currentlaw + w_buildings*buildings_currentlaw + w_intangibles*intangibles_currentlaw
+#Default (no reform)
+buildings_default   <- canada$buildings_cost_recovery
+machines_default    <- canada$machines_cost_recovery
+intangibles_default <- canada$intangibles_cost_recovery
+waverage_default    <- w_machines*machines_default + w_buildings*buildings_default + w_intangibles*intangibles_default
 
-#(i) Reform: machinery and buildings expensed (NPV = 1) from reform_start_year on; intangibles unchanged
+#Reform: machinery and buildings expensed (NPV = 1) from reform_start_year on; intangibles unchanged
 reform_on          <- canada$year >= reform_start_year
-buildings_reform   <- ifelse(reform_on, 1, buildings_currentlaw)
-machines_reform    <- ifelse(reform_on, 1, machines_currentlaw)
-intangibles_reform <- intangibles_currentlaw
+buildings_reform   <- ifelse(reform_on, 1, buildings_default)
+machines_reform    <- ifelse(reform_on, 1, machines_default)
+intangibles_reform <- intangibles_default
 waverage_reform    <- w_machines*machines_reform + w_buildings*buildings_reform + w_intangibles*intangibles_reform
 
-#Assemble wide comparison table and write it out
 canada_scenario <- data.frame(
-  year                   = canada$year,
-  buildings_currentlaw   = buildings_currentlaw,
-  machines_currentlaw    = machines_currentlaw,
-  intangibles_currentlaw = intangibles_currentlaw,
-  waverage_currentlaw    = waverage_currentlaw,
-  buildings_reform       = buildings_reform,
-  machines_reform        = machines_reform,
-  intangibles_reform     = intangibles_reform,
-  waverage_reform        = waverage_reform,
-  waverage_diff          = waverage_reform - waverage_currentlaw
+  year               = canada$year,
+  buildings          = buildings_default,
+  machines           = machines_default,
+  intangibles        = intangibles_default,
+  waverage           = waverage_default,
+  buildings_reform   = buildings_reform,
+  machines_reform    = machines_reform,
+  intangibles_reform = intangibles_reform,
+  waverage_reform    = waverage_reform,
+  waverage_diff      = waverage_reform - waverage_default
 )
-
 write.csv(canada_scenario, file.path(final_outputs_path, "canada_expensing_scenario.csv"), row.names = FALSE)
+
+## OECD rankings without vs. with the reform, for selected years ---------------
+#OECD ranking excludes the 5 EU-but-not-OECD countries in the dataset
+oecd_excl <- c("BGR","HRV","CYP","MLT","ROU")
+
+canada_expensing_ranking <- function(yr){
+  d <- subset(data, year == yr & !(iso_3 %in% oecd_excl),
+              select = c(iso_3, country, intangibles_cost_recovery, waverage))
+  #The reform changes only Canada: machinery and buildings to 1, intangibles unchanged
+  d$waverage_reform <- d$waverage
+  can <- d$iso_3 == "CAN"
+  d$waverage_reform[can] <- w_machines*1 + w_buildings*1 + w_intangibles*d$intangibles_cost_recovery[can]
+  #Ranks: weighted average rounded to 4 dp, descending, ties assigned the minimum rank (report convention)
+  d$rank        <- rank(-round(d$waverage, 4),        ties.method = "min")
+  d$rank_reform <- rank(-round(d$waverage_reform, 4), ties.method = "min")
+  d <- d[order(d$rank, d$country), ]
+  data.frame(
+    country         = d$country,
+    waverage        = round(d$waverage, 3),
+    rank            = d$rank,
+    waverage_reform = round(d$waverage_reform, 3),
+    rank_reform     = d$rank_reform
+  )
+}
+
+write.csv(canada_expensing_ranking(2026), file.path(final_outputs_path, "canada_expensing_rankings_2026.csv"), row.names = FALSE)
+write.csv(canada_expensing_ranking(2030), file.path(final_outputs_path, "canada_expensing_rankings_2030.csv"), row.names = FALSE)
 
 
 #Create output tables and data for the graphs included in the report#####
