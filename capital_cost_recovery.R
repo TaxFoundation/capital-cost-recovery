@@ -478,9 +478,14 @@ data <- subset(data, select = c(country, year, buildings_cost_recovery, machines
 
 
 #Weighing the calculated net present values of each asset by its respective capital stock share (based on Devereux 2012)
-data$weighted_machines <- data$machines_cost_recovery*.4391081
-data$weighted_buildings <- data$buildings_cost_recovery*.4116638
-data$weighted_intangibles <- data$intangibles_cost_recovery*.1492281
+#Asset weights (capital-stock shares, Devereux 2012). Defined once here and reused everywhere the weighted average is built, including the Canada scenario below.
+w_machines    <- 0.4391081
+w_buildings   <- 0.4116638
+w_intangibles <- 0.1492281
+
+data$weighted_machines    <- data$machines_cost_recovery    * w_machines
+data$weighted_buildings   <- data$buildings_cost_recovery   * w_buildings
+data$weighted_intangibles <- data$intangibles_cost_recovery * w_intangibles
 
 data$waverage <- rowSums(data[,c("weighted_machines","weighted_buildings","weighted_intangibles")])
 data$average<-rowMeans(data[,c("machines_cost_recovery","buildings_cost_recovery","intangibles_cost_recovery")])
@@ -673,12 +678,7 @@ write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FAL
 # present value by asset and the capital-stock-weighted average under both
 # scenarios. Output: final-outputs/canada_expensing_scenario.csv
 
-#Asset weights (capital-stock shares, Devereux 2012); identical to the weights
-#used to build 'waverage' above (machines .4391081, buildings .4116638,
-#intangibles .1492281)
-w_machines    <- 0.4391081
-w_buildings   <- 0.4116638
-w_intangibles <- 0.1492281
+#Uses the asset weights (w_machines / w_buildings / w_intangibles) defined once above
 
 #First year the reform is in effect
 reform_start_year <- 2026
