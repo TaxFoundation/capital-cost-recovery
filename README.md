@@ -1,9 +1,9 @@
 # Capital Cost Recovery across the OECD
 
-The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https://taxfoundation.org/publications/capital-cost-recovery-across-the-oecd/) shows how capital allowances compare across OECD countries and how they have developed since 2000. The dataset we compiled for the years 1979 to 2022 is made available as a resource for research.
+The Tax Foundation’s publication [Capital Cost Recovery across the OECD](https://taxfoundation.org/data/all/global/capital-allowances-cost-recovery-2026/) shows how capital allowances compare across OECD countries and how they have developed since 2000. The dataset we compiled for the years 1979 to 2022 is made available as a resource for research.
 
 ## Latest Release
-The current version of this project is 1.2.0 (2023-04-04).
+The current version of this project is 1.2.0 (2026-07-27).
 
 ## Installation Directions
 You can analyze the data on your personal computer by using R.
@@ -26,11 +26,11 @@ All necessary functions to run capital-cost-recovery can be called from capital-
 ## The Dataset
 
 ### Scope
-The source dataset compiled for this publication includes the 2020 depreciation schedules of all 38 OECD countries for the following three assets: industrial buildings, machinery, and intangibles.
+The source dataset compiled for this publication includes the 2025 depreciation schedules of all 38 OECD countries for the following three assets: industrial buildings, machinery, and intangibles.
 
-In addition, the dataset includes historic depreciation schedules for the time period 1979 to 2020. However, years prior to 2000 do not include data for all OECD countries (e.g., the year 1979 only includes data for Canada, Finland, and Germany). The dataset also includes some historic depreciation schedules data for non-OECD countries.
+In addition, the dataset includes historic depreciation schedules for the time period 1979 to 2024. However, years prior to 2000 do not include data for all OECD countries (e.g., the year 1979 only includes data for Canada, Finland, and Germany). The dataset also includes some historic depreciation schedules data for non-OECD countries.
 
-It also includes the best available inventory valuation methods in OECD countries up until 2022, statutory corporate tax rates, effective average tax rates (EATRs), and effective marginal tax rates (EMTRs) for certain years and countries. However, these variables are not used in this report.
+It also includes the best available inventory valuation methods in OECD countries up until 2025, statutory corporate tax rates, effective average tax rates (EATRs), and effective marginal tax rates (EMTRs) for certain years and countries. However, these variables are not used in this report.
 
 
 ### Depreciation Methods
@@ -71,11 +71,11 @@ The description of the dataset explains the variables it contains and gives some
 
 Location of **input** files to .R code file including:
 
-- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of OECD countries and some non-OECD countries for the years 2000-2022 (and for some countries for the years 1979-1999 as well; the new OECD country Colombia is missing for the years 2000-2012 due to data unavailability).
+- `cost_recovery_data.csv` Dataset that includes variables that reflect the depreciation schedules of OECD countries and some non-OECD countries for the years 2000-2025 (and for some countries for the years 1979-1999 as well; the new OECD country Colombia is missing for the years 2000-2012 due to data unavailability).
 
 - `country_codes.csv` Dataset that includes all 249 sovereign states and dependent territories that have been assigned a country code by the International Organization for Standardization (ISO). Includes official country names in various languages, ISO country codes, continents, and further geographical information.
 
-- `RealGDPValues.xlsx` U.S. Department of Agriculture's dataset of historical and projected real Gross Domestic Product (GDP) and growth rates of GDP for 181 countries and various regions (in billions of 2015 dollars) for the years 1990 to 2032.
+- `RealGDP.xlsx` U.S. Department of Agriculture's dataset of historical and projected real Gross Domestic Product (GDP) and growth rates of GDP for 182 countries and various regions (in billions of 2017 dollars) for the years 1990 to 2035.
 
 
 ### /final-data
@@ -87,17 +87,19 @@ Location of **final data** files of .R code file including
 ### /final-outputs
 Location of **output tables** that are included in the publication or needed to produce the charts that are part of the publication.
 
-- `asset_averages.csv` Table showing the average net present value of capital allowances in the OECD by asset type for the year 2022.
+- `asset_averages.csv` Table showing the average net present value of capital allowances in the OECD by asset type for the year 2025.
 
-- `cit_rates_timeseries.csv` Table showing the average and weighted average (weighted by GDP) combined corporate income tax rate in the OECD for each year from 2000 to 2022.
+- `asset_averages_inflation.csv` Table showing the average net present value of capital allowances (using the OECD's 2025 average inflation rate instead of the 2% inflation rate) in the OECD by asset type for the year 2025.
 
-- `eu_cctb.csv` Table showing the average net present value of capital allowances in EU countries for the year 2022.
+- `cit_rates_timeseries.csv` Table showing the average and weighted average (weighted by GDP) combined corporate income tax rate in the OECD for each year from 2000 to 2025.
 
-- `npv_europe.csv` Table showing the average net present value of capital allowances in European countries for the year 2022. Also includes a column that ranks the countries by the net present value of their capital allowances.
+- `eu_cctb.csv` Table showing the average net present value of capital allowances in EU countries for the year 2023.
 
-- `npv_ranks_2022.csv` Table showing the net present value of capital allowances by OECD country and asset type for the year 2022. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking by each asset type and by the weighted average.
+- `npv_europe.csv` Table showing the average net present value of capital allowances in European countries for the year 2025. Also includes a column that ranks the countries by the net present value of their capital allowances.
 
-- `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2022.
+- `npv_ranks_2025.csv` Table showing the net present value of capital allowances by OECD country and asset type for the year 2025. It also includes the average of the net present values of capital allowances weighted by each asset's estimated share in the economy and a ranking by each asset type and by the weighted average.
+
+- `npv_weighted_timeseries.csv` Table showing the average and weighted average (weighted by GDP) net present value of capital allowances in the OECD for each year from 2000 to 2025.
 
 
 ## Contact Information
