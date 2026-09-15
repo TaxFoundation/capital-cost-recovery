@@ -677,8 +677,11 @@ write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FAL
 # 2026-09-15. In this dataset's three assets that maps to:
 #   - machinery   -> 1.0  (machinery/equipment are eligible; already immediately
 #                    expensed 2025-2029 in the baseline, made permanent here)
-#   - intangibles -> 1.0  (patents are explicitly eligible; the dataset's
-#                    intangible asset is patents)
+#   - intangibles -> 1.0  (the dataset's intangible asset is patents, which the
+#                    measure lists as eligible; the excluded class 14/14.1
+#                    intangibles are franchises, licenses and goodwill, not
+#                    patents - so patents get full expensing, consistent with
+#                    how this dataset treats the intangible asset)
 #   - buildings   -> unchanged (industrial buildings in CCA classes 1 and 3 are
 #                    excluded from the measure)
 # Compared against the default (pre-measure) trajectory. The baseline already
