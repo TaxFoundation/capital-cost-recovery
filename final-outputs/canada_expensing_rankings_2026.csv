@@ -1,9 +1,9 @@
 "country","waverage","rank","waverage_reform","rank_reform"
 "Estonia",1,1,1,1
 "Latvia",1,1,1,1
-"United States",0.945,3,0.945,4
-"Lithuania",0.929,4,0.929,5
-"Canada",0.85,5,1,1
+"United States",0.945,3,0.945,3
+"Lithuania",0.929,4,0.929,4
+"Canada",0.85,5,0.85,5
 "Italy",0.763,6,0.763,6
 "Korea",0.752,7,0.752,7
 "Iceland",0.747,8,0.747,8

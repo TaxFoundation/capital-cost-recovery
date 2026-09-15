@@ -670,19 +670,30 @@ data <- data[which(data$iso_3=="AUS"
 write.csv(data, file.path(final_data_path, "npv_all_years.csv"), row.names = FALSE)
 
 
-#Scenario: Canada immediate expensing for machinery and buildings##############
-# Models a reform in which Canada grants immediate expensing (net present value
-# of capital allowances = 1.0) for MACHINERY and BUILDINGS from 2026 onward,
-# with intangibles unchanged, against the default (no-reform) trajectory.
-# Uses the asset weights (w_machines / w_buildings / w_intangibles) defined above.
+#Scenario: Canada Productivity Mega-Deduction#################################
+# Models Canada's "Productivity Mega-Deduction" (Dept. of Finance, 2026-09-15):
+# permanent 100% immediate expensing (net present value of allowances = 1.0)
+# for capital property under the CCA rules, for property acquired after
+# 2026-09-15. In this dataset's three assets that maps to:
+#   - machinery   -> 1.0  (machinery/equipment are eligible; already immediately
+#                    expensed 2025-2029 in the baseline, made permanent here)
+#   - intangibles -> 1.0  (patents are explicitly eligible; the dataset's
+#                    intangible asset is patents)
+#   - buildings   -> unchanged (industrial buildings in CCA classes 1 and 3 are
+#                    excluded from the measure)
+# Compared against the default (pre-measure) trajectory. The baseline already
+# has machinery and patents at 1.0 in 2026, so the measure binds from 2027 on
+# (permanence + patents) and, for machinery, from 2030 (end of the temporary
+# regime). Uses the asset weights (w_machines / w_buildings / w_intangibles)
+# defined above.
 # Outputs:
 #  - final-outputs/canada_expensing_scenario.csv        NPV by asset + weighted
-#      average for Canada, 2017-2034, default and reform
+#      average for Canada, 2017-2034, default and mega-deduction
 #  - final-outputs/canada_expensing_rankings_2026.csv
 #  - final-outputs/canada_expensing_rankings_2030.csv   OECD rankings without vs.
-#      with the reform, 2026 and 2030
+#      with the mega-deduction, 2026 and 2030
 
-#First year the reform is in effect
+#First year the measure is in effect
 reform_start_year <- 2026
 
 ## Canada NPV by asset and weighted average, 2017-2034 -------------------------
@@ -696,11 +707,11 @@ machines_default    <- canada$machines_cost_recovery
 intangibles_default <- canada$intangibles_cost_recovery
 waverage_default    <- w_machines*machines_default + w_buildings*buildings_default + w_intangibles*intangibles_default
 
-#Reform: machinery and buildings expensed (NPV = 1) from reform_start_year on; intangibles unchanged
+#Mega-deduction: machinery and patents expensed (NPV = 1) from reform_start_year on; buildings excluded
 reform_on          <- canada$year >= reform_start_year
-buildings_reform   <- ifelse(reform_on, 1, buildings_default)
+buildings_reform   <- buildings_default
 machines_reform    <- ifelse(reform_on, 1, machines_default)
-intangibles_reform <- intangibles_default
+intangibles_reform <- ifelse(reform_on, 1, intangibles_default)
 waverage_reform    <- w_machines*machines_reform + w_buildings*buildings_reform + w_intangibles*intangibles_reform
 
 canada_scenario <- data.frame(
@@ -717,17 +728,17 @@ canada_scenario <- data.frame(
 )
 write.csv(canada_scenario, file.path(final_outputs_path, "canada_expensing_scenario.csv"), row.names = FALSE)
 
-## OECD rankings without vs. with the reform, for selected years ---------------
+## OECD rankings without vs. with the mega-deduction, for selected years -------
 #OECD ranking excludes the 5 EU-but-not-OECD countries in the dataset
 oecd_excl <- c("BGR","HRV","CYP","MLT","ROU")
 
 canada_expensing_ranking <- function(yr){
   d <- subset(data, year == yr & !(iso_3 %in% oecd_excl),
-              select = c(iso_3, country, intangibles_cost_recovery, waverage))
-  #The reform changes only Canada: machinery and buildings to 1, intangibles unchanged
+              select = c(iso_3, country, buildings_cost_recovery, waverage))
+  #The mega-deduction changes only Canada: machinery and patents to 1; buildings (class 1/3) excluded
   d$waverage_reform <- d$waverage
   can <- d$iso_3 == "CAN"
-  d$waverage_reform[can] <- w_machines*1 + w_buildings*1 + w_intangibles*d$intangibles_cost_recovery[can]
+  d$waverage_reform[can] <- w_machines*1 + w_buildings*d$buildings_cost_recovery[can] + w_intangibles*1
   #Ranks: weighted average rounded to 4 dp, descending, ties assigned the minimum rank (report convention)
   d$rank        <- rank(-round(d$waverage, 4),        ties.method = "min")
   d$rank_reform <- rank(-round(d$waverage_reform, 4), ties.method = "min")
